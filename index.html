@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perambulando - Seu Guia de Lazer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <img src="logo.png" alt="Logo Perambulando" class="logo-img">
+            <nav>
+                <ul>
+                    <li><a href="#cinema"><i class="fas fa-film"></i> Cinema</a></li>
+                    <li><a href="#teatro"><i class="fas fa-theater-masks"></i> Teatro</a></li>
+                    <li><a href="#restaurantes"><i class="fas fa-utensils"></i> Restaurantes</a></li>
+                    <li><a href="#feiras"><i class="fas fa-store"></i> Feiras</a></li>
+                    <li><a href="#proximo" class="destaque"><i class="fas fa-map-marker-alt"></i> Próximo a Você</a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <a href="painel.html"><i class="far fa-calendar-alt"></i> Minha Programação</a>
+                <a href="login.html"><i class="fas fa-user-circle"></i> Entrar</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="search-filter-box">
+            <h2>Encontre o rolê perfeito! 😉</h2>
+            <form id="search-form">
+                <input type="text" placeholder="Busque por nome do evento..." class="search-input">
+                <select name="categoria">
+                    <option value="">Categoria</option>
+                    <option value="musica">Música</option>
+                    <option value="teatro">Teatro</option>
+                    <option value="cinema">Cinema</option>
+                    <option value="arte">Arte</option>
+                </select>
+                <input type="date" name="data">
+                <select name="preco">
+                    <option value="">Preço</option>
+                    <option value="gratuito">Gratuito</option>
+                    <option value="pago">Pago</option>
+                </select>
+                <button type="submit">Buscar</button>
+            </form>
+        </section>
+
+        <section class="events-grid" id="events-container">
+            </section>
+    </main>
+
+    <script src="script.js"></script>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <p>&copy; 2025 Perambulando. Todos os direitos reservados.</p>
+                    <p>Seu guia para desbravar a cultura do Recife.</p>
+                </div>
+                <div class="footer-social">
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Contato por E-mail"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
