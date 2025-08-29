@@ -37,7 +37,7 @@ Requisitos Funcionais (resumidos)
 -   Favoritos, lembretes e notificações.
 -   Avaliações e comentários.
 -   Painel para produtores.
--   Abas organizadas (cinema, teatro, restaurantes, feiras, próximos e
+-   Abas organizadas (cinema, teatro, restaurantes, feiras e
     “Próximo a você”).
 -   Agenda personalizada em “Minha Programação”.
 
