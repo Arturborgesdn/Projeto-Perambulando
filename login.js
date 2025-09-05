@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Em um projeto real, aqui você enviaria os dados para o backend
         // para verificar se o usuário e a senha estão corretos.
         if (email && password) {
-            alert('Login realizado com sucesso! ✅');
 
             // Salva um "token de usuário" falso no localStorage para simular que ele está logado.
             // Guardamos o nome do usuário para usar na página do painel.
