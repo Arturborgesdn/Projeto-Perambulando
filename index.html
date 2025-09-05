@@ -8,54 +8,81 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-
     <header>
-        <div class="container">
+    <div class="container">
+        <button id="menu-toggle" class="menu-btn" aria-label="Abrir menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <a href="index.html" class="logo-container">
             <img src="logo.png" alt="Logo Perambulando" class="logo-img">
-            <nav>
-                <ul>
-                    <li><a href="#cinema"><i class="fas fa-film"></i> Cinema</a></li>
-                    <li><a href="#teatro"><i class="fas fa-theater-masks"></i> Teatro</a></li>
-                    <li><a href="#restaurantes"><i class="fas fa-utensils"></i> Restaurantes</a></li>
-                    <li><a href="#feiras"><i class="fas fa-store"></i> Feiras</a></li>
-                    <li><a href="#proximo" class="destaque"><i class="fas fa-map-marker-alt"></i> Próximo a Você</a></li>
-                </ul>
-            </nav>
-            <div class="user-profile">
-                <a href="painel.html"><i class="far fa-calendar-alt"></i> Minha Programação</a>
-                <a href="login.html"><i class="fas fa-user-circle"></i> Entrar</a>
-            </div>
+            <h1>Perambulando</h1>
+        </a>
+
+        <div class="user-profile">
+            <a href="painel.html" title="Minha Programação"><i class="far fa-calendar-alt"></i></a>
+            <a href="login.html" title="Entrar"><i class="fas fa-user-circle"></i></a>
+            <a href="perto-de-mim.html" title="Perto de Mim"><i class="fas fa-map-marker-alt"></i></a>
         </div>
-    </header>
+    </div>
+</header>
 
-    <main class="container">
-        <section class="search-filter-box">
-            <h2>Encontre o rolê perfeito! 😉</h2>
-            <form id="search-form">
-                <input type="text" placeholder="Busque por nome do evento..." class="search-input">
-                <select name="categoria">
-                    <option value="">Categoria</option>
-                    <option value="musica">Música</option>
-                    <option value="teatro">Teatro</option>
-                    <option value="cinema">Cinema</option>
-                    <option value="arte">Arte</option>
-                </select>
-                <input type="date" name="data">
-                <select name="preco">
-                    <option value="">Preço</option>
-                    <option value="gratuito">Gratuito</option>
-                    <option value="pago">Pago</option>
-                </select>
-                <button type="submit">Buscar</button>
-            </form>
-        </section>
+<nav id="mobile-menu" class="side-menu">
+    <a href="index.html">Início</a>
+    <a href="cinema.html">Cinema</a>
+    <a href="teatro.html">Teatro</a>
+    <a href="restaurantes.html">Restaurantes</a>
+    <a href="feiras.html">Feiras</a>
+    <a href="shows.html"> Shows</a>
+    <a href="exposicoes.html"> Exposições</a>
+    <a href="lazer.html"> Programas de Lazer</a>
+    <a href="infantil.html"> Programas Infantis</a>
+    <a href="roteiros_prontos.html"> Roteiros Prontos</a>
+    <a href="eventos-do-dia.html" style="color: red;">🔥 Eventos do Dia</a>
+    <a href="painel.html">Minha Programação</a>
+    <a href="login.html">Login / Cadastro</a>
+</nav>
+    <div id="overlay"></div>
+        <main class="container">
+            <section class="search-filter-box">
+                <h2>Encontre o rolê perfeito! 😉</h2>
+                
+                <form id="search-form" class="main-filters">
+                    <input type="text" placeholder="Busque por nome..." class="search-input" id="search-input">
+                    
+                    <select id="price-filter" class="filter-select">
+                        <option value="todos">Qualquer Preço</option>
+                        <option value="gratuito">Gratuito</option>
+                        <option value="range1">$ (até R$20)</option>
+                        <option value="range2">$$ (R$21 a R$50)</option>
+                        <option value="range3">$$$ (R$51 a R$100)</option>
+                        <option value="range4">$$$$+ (Acima de R$100)</option>
+                    </select>
+                    
+                    <input type="date" id="date-filter" class="filter-select">
+                    
+                    <button type="submit" id="search-btn">Buscar</button>
+                    <button type="button" id="clear-filters-btn" class="clear-btn">Limpar</button>
+                </form>
 
-        <section class="events-grid" id="events-container">
+                <nav class="filter-nav">
+                    <button class="filter-btn active" data-filter="Todos">Todos</button>
+                    <button class="filter-btn" data-filter="Shows">Shows</button>
+                    <button class="filter-btn" data-filter="Cinema">Cinema</button>
+                    <button class="filter-btn" data-filter="Teatro">Teatro</button>
+                    <button class="filter-btn" data-filter="Exposições">Exposições</button>
+                    <button class="filter-btn" data-filter="Feira">Feiras</button>
+                    <button class="filter-btn" data-filter="Lazer">Programas de Lazer</button>
+                    <button class="filter-btn" data-filter="Infantil">Programas Infantis</button>
+                </nav>
             </section>
-    </main>
 
-    <script src="script.js"></script>
-
+            <section id="upcoming-events" class="category-section">
+                <div id="events-grid" class="events-grid">
+                    </div>
+            </section>
+        </main>
+   
     <footer class="site-footer">
         <div class="container">
             <div class="footer-content">
@@ -67,11 +94,13 @@
                     <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" title="Contato por E-mail"><i class="fas fa-envelope"></i></a>
+                    <a href="#" title="Contato por E-mail"><i class="fss fa-envelope"></i></a>
                 </div>
             </div>
         </div>
     </footer>
-
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
