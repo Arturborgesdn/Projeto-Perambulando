@@ -1,0 +1,238 @@
+/* cinema.css */
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: var(--dark-color);
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+.cinema-group {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.cinema-group h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.movie-listing {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.movie-listing:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.movie-poster img {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.movie-details {
+    flex: 1;
+}
+
+.movie-details h3 {
+    font-size: 1.4rem;
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.movie-details .genre {
+    font-style: italic;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.session-times h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.session-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.session-list a {
+    background-color: var(--light-color);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px 15px;
+    text-decoration: none;
+    color: var(--dark-color);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.session-list a:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* EM cinema.css - ADICIONE NO FINAL */
+
+.date-selector-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.date-selector-container button {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-selector-container button:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Estilo do botão do dia ATIVO */
+.date-selector-container button.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+/* EM cinema.css - ADICIONE NO FINAL */
+
+/* --- Estilos do Modal de Sessão --- */
+
+/* O Fundo Escuro (Overlay) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1001;
+    display: none; /* Começa escondido */
+}
+
+/* A Janela do Modal */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+    z-index: 1002;
+    display: none; /* Começa escondido */
+}
+
+/* Mostra o modal e o overlay quando a classe 'active' é adicionada via JS */
+.modal.active,
+.modal-overlay.active {
+    display: block;
+}
+
+/* Estilos internos do Modal */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    color: var(--dark-color);
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 25px;
+    line-height: 1.7;
+}
+
+.modal-body h3 {
+    font-size: 1.2rem;
+    color: var(--dark-color);
+}
+.modal-body p {
+    margin-bottom: 15px;
+}
+.modal-body .synopsis-title {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.modal-footer {
+    padding: 20px 25px;
+    text-align: right;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 15px 15px;
+}
+
+.buy-ticket-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buy-ticket-btn:hover {
+     background-color: #063ae5;
+}
+
+.synopsis {
+    font-style: italic;
+    margin-top: 20px;
+}
