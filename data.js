@@ -133,8 +133,37 @@ const mockEventsData = [
 // DADOS PARA A PÁGINA DE CINEMA (CINEMA.HTML)
 // =======================================================
 const cinemaData = [
-    { name: "Cinemark RioMar", location: "Shopping RioMar, Pina", movies: [ { title: "Duna: Parte Dois", genre: "Ficção Científica, Aventura", rating: "12 anos", poster: "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg", synopsis: "Paul Atreides se une a Chani e aos Fremen em uma guerra de vingança contra os conspiradores que destruíram sua família...", sessions: [ { date: "2025-09-02", time: "17:45", type: "Legendado" }, { date: "2025-09-03", time: "21:00", type: "Legendado - IMAX" } ] }, { title: "Divertida Mente 2", genre: "Animação, Família", rating: "Livre", poster: "https://m.media-amazon.com/images/M/MV5BMGFjZDVhNTctNjU2OS00N2E1LWI3ZDMtZThiYTIzYWNhMjk3XkEyXkFqcGc@._V1_.jpg", synopsis: "A sala de controle mental de Riley passa por uma demolição súbita para dar lugar a algo totalmente inesperado...", sessions: [ { date: "2025-09-02", time: "14:00", type: "Dublado - 3D" }, { date: "2025-09-03", time: "16:15", type: "Dublado" } ] } ] },
-    { name: "UCI Kinoplex Tacaruna", location: "Shopping Tacaruna, Santo Amaro", movies: [ { title: "O Auto da Compadecida 2", genre: "Comédia, Nacional", rating: "12 anos", poster: "https://br.web.img3.acsta.net/c_310_420/img/e8/f2/e8f24b869f741946d906755319d1b213.jpg", synopsis: "Vinte e cinco anos depois, a amizade de João Grilo e Chicó é posta à prova...", sessions: [ { date: "2025-09-03", time: "15:00", type: "Nacional" }, { date: "2025-09-04", time: "17:30", type: "Nacional" } ] } ] }
+    { 
+        name: "Cinemark RioMar",
+        location: "Shopping RioMar, Pina",
+        movies: [ { title: "Duna: Parte Dois", 
+        genre: "Ficção Científica, Aventura",
+        rating: "12 anos", 
+        poster: "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg", 
+        synopsis: "Paul Atreides se une a Chani e aos Fremen em uma guerra de vingança contra os conspiradores que destruíram sua família...", 
+        sessions: [
+        { date: "2025-09-05", time: "17:45", type: "Legendado" },
+        { date: "2025-09-06", time: "21:00", type: "Legendado - IMAX" } ] }, 
+        
+        { title: "Divertida Mente 2", 
+        genre: "Animação, Família", 
+        rating: "Livre", 
+        poster: "https://m.media-amazon.com/images/M/MV5BMGFjZDVhNTctNjU2OS00N2E1LWI3ZDMtZThiYTIzYWNhMjk3XkEyXkFqcGc@._V1_.jpg", 
+        synopsis: "A sala de controle mental de Riley passa por uma demolição súbita para dar lugar a algo totalmente inesperado...", 
+        sessions: [ 
+        { date: "2025-09-05", time: "14:00", type: "Dublado - 3D" }, 
+        { date: "2025-09-07", time: "16:15", type: "Dublado" } ] } ] },
+
+        { name: "UCI Kinoplex Tacaruna", 
+        location: "Shopping Tacaruna, Santo Amaro", 
+        movies: [ { title: "O Auto da Compadecida 2", 
+        genre: "Comédia, Nacional", 
+        rating: "12 anos", 
+        poster: "https://br.web.img3.acsta.net/c_310_420/img/e8/f2/e8f24b869f741946d906755319d1b213.jpg", 
+        synopsis: "Vinte e cinco anos depois, a amizade de João Grilo e Chicó é posta à prova...", 
+        sessions: [ 
+        { date: "2025-09-08", time: "15:00", type: "Nacional" }, 
+        { date: "2025-09-09", time: "17:30", type: "Nacional" } ] } ] }
 ];
 
 
@@ -142,8 +171,43 @@ const cinemaData = [
 // DADOS PARA A PÁGINA DE TEATRO (TEATRO.HTML)
 // =======================================================
 const teatroData = [
-    { name: "Teatro de Santa Isabel", location: "Praça da República, Santo Antônio", shows: [ { title: "O Auto da Compadecida", genre: "Comédia, Clássico", rating: "12 anos", poster: "https://i.imgur.com/kS94b2W.jpg", synopsis: "As aventuras de João Grilo...", sessions: [{ date: "2025-09-02", time: "20:00", price: "R$ 60" }, { date: "2025-09-03", time: "17:00", price: "R$ 60" }] }, { title: "Musical 'O Fantasma da Ópera'", genre: "Musical, Romance", rating: "12 anos", poster: "https://i.imgur.com/1vJ7E0P.jpg", synopsis: "Um gênio musical desfigurado...", sessions: [{ date: "2025-09-04", time: "21:00", price: "R$ 150" }, { date: "2025-09-05", time: "21:00", price: "R$ 150" }] } ] },
-    { name: "Teatro do Parque", location: "Rua do Hospício, Boa Vista", shows: [ { title: "Macbeth", genre: "Drama, Tragédia", rating: "12 anos", poster: "https://i.imgur.com/vHqJ9cQ.jpg", synopsis: "Um ambicioso general escocês...", sessions: [{ date: "2025-09-02", time: "19:30", price: "R$ 80" }] }, { title: "A Vendedora de Fósforos", genre: "Infantil", rating: "Livre", poster: "https://i.imgur.com/3Yx4KxX.jpg", synopsis: "Uma reinterpretação do clássico conto...", sessions: [{ date: "2025-09-03", time: "16:00", price: "R$ 30" }] } ] }
+    { name: "Teatro de Santa Isabel", 
+    location: "Praça da República, Santo Antônio", 
+    shows: [ 
+    
+    { title: "O Auto da Compadecida", 
+    genre: "Comédia, Clássico", 
+    rating: "12 anos", 
+    poster: "https://i.imgur.com/kS94b2W.jpg", 
+    synopsis: "As aventuras de João Grilo...", 
+    sessions: [
+    { date: "2025-09-05", time: "20:00", price: "R$ 60" }, 
+    { date: "2025-09-06", time: "17:00", price: "R$ 60" }] }, 
+    
+    { title: "Musical 'O Fantasma da Ópera'",
+    genre: "Musical, Romance", 
+    rating: "12 anos", 
+    poster: "https://i.imgur.com/1vJ7E0P.jpg", 
+    synopsis: "Um gênio musical desfigurado...", 
+    sessions: [
+    { date: "2025-09-07", time: "21:00", price: "R$ 150" }, 
+    { date: "2025-09-05", time: "21:00", price: "R$ 150" }] } ] },
+
+
+    { name: "Teatro do Parque", 
+    location: "Rua do Hospício, Boa Vista", shows: [ 
+    { title: "Macbeth", 
+    genre: "Drama, Tragédia", 
+    rating: "12 anos", 
+    poster: "https://i.imgur.com/vHqJ9cQ.jpg", 
+    synopsis: "Um ambicioso general escocês...", 
+    sessions: [{ date: "2025-09-08", time: "19:30", price: "R$ 80" }] }, 
+    { title: "A Vendedora de Fósforos",
+     genre: "Infantil", 
+     rating: "Livre", 
+     poster: "https://i.imgur.com/3Yx4KxX.jpg", 
+     synopsis: "Uma reinterpretação do clássico conto...", 
+     sessions: [{ date: "2025-09-06", time: "16:00", price: "R$ 30" }] } ] }
 ];
 
 
@@ -151,11 +215,46 @@ const teatroData = [
 // DADOS PARA A PÁGINA DE RESTAURANTES (RESTAURANTES.HTML)
 // =======================================================
 const foodData = [
-    { id: 1, name: "Leite", category: "Restaurante", cuisine: "Regional Sofisticado", location: "Praça Joaquim Nabuco, Santo Antônio", priceRange: "$$$$", image: "https://i.imgur.com/GzB0G2d.jpg", specialty: "O restaurante mais antigo do Brasil em funcionamento." },
-    { id: 2, name: "Parraxaxá", category: "Restaurante", cuisine: "Comida Regional", location: "Casa Forte", priceRange: "$$$", image: "https://i.imgur.com/yv8o2wR.jpg", specialty: "Buffet self-service com grande variedade de pratos nordestinos." },
-    { id: 3, name: "Seu Boteco", category: "Bar", cuisine: "Boteco", location: "Recife Antigo", priceRange: "$$$", image: "https://i.imgur.com/8Qh1W6d.jpg", specialty: "Chopp gelado e petiscos com vista para o Marco Zero." },
-    { id: 4, name: "Tapioca da Guedes", category: "Comida de Rua", cuisine: "Tapiocaria", location: "Alto da Sé, Olinda", priceRange: "$", image: "https://i.imgur.com/c5Bv6g5.jpg", specialty: "Tapiocas tradicionais com uma vista espetacular." },
-    { id: 5, name: "UK Pub", category: "Bar", cuisine: "Pub Inglês", location: "Rua Francisco da Cunha, Boa Viagem", priceRange: "$$$", image: "https://i.imgur.com/sS8t7hN.jpg", specialty: "Rock ao vivo e grande variedade de cervejas importadas." }
+    { id: 1, 
+    name: "Leite", 
+    category: "Restaurante", 
+    cuisine: "Regional Sofisticado", 
+    location: "Praça Joaquim Nabuco, Santo Antônio", 
+    priceRange: "$$$$", 
+    image: "https://i.imgur.com/GzB0G2d.jpg", 
+    specialty: "O restaurante mais antigo do Brasil em funcionamento." },
+    { id: 2, 
+    name: "Parraxaxá", 
+    category: "Restaurante", 
+    cuisine: "Comida Regional", 
+    location: "Casa Forte", 
+    priceRange: "$$$", 
+    image: "https://i.imgur.com/yv8o2wR.jpg", 
+    specialty: "Buffet self-service com grande variedade de pratos nordestinos." },
+    { id: 3, 
+    name: "Seu Boteco", 
+    category: "Bar", 
+    cuisine: "Boteco", 
+    location: "Recife Antigo", 
+    priceRange: "$$$", 
+    image: "https://i.imgur.com/8Qh1W6d.jpg", 
+    specialty: "Chopp gelado e petiscos com vista para o Marco Zero." },
+    { id: 4, 
+    name: "Tapioca da Guedes", 
+    category: "Comida de Rua", 
+    cuisine: "Tapiocaria", 
+    location: "Alto da Sé, Olinda", 
+    priceRange: "$", 
+    image: "https://i.imgur.com/c5Bv6g5.jpg", 
+    specialty: "Tapiocas tradicionais com uma vista espetacular." },
+    { id: 5, 
+    name: "UK Pub", 
+    category: "Bar", 
+    cuisine: "Pub Inglês", 
+    location: "Rua Francisco da Cunha, Boa Viagem", 
+    priceRange: "$$$", 
+    image: "https://i.imgur.com/sS8t7hN.jpg", 
+    specialty: "Rock ao vivo e grande variedade de cervejas importadas." }
 ];
 
 
@@ -163,9 +262,34 @@ const foodData = [
 // DADOS PARA A PÁGINA DE FEIRAS (FEIRAS.HTML)
 // =======================================================
 const feirasData = [
-    { id: 1, name: "Feira de Casa Amarela", zone: "Norte", address: "Mercado de Casa Amarela, Recife", days: "Diariamente", type: "Geral" },
-    { id: 2, name: "Feira de Boa Viagem", zone: "Sul", address: "Praça de Boa Viagem, Recife", days: "Domingos", type: "Artesanato e Gastronomia" },
-    { id: 3, name: "Feira Orgânica do Parnamirim", zone: "Norte", address: "Praça do Parnamirim, Recife", days: "Sábados", type: "Orgânicos" },
-    { id: 4, name: "Feira do Cordeiro", zone: "Oeste", address: "Parque de Exposições do Cordeiro", days: "Sábados", type: "Animais e Geral" },
-    { id: 5, name: "Feira do Bom Jesus", zone: "Centro", address: "Rua do Bom Jesus, Recife Antigo", days: "Domingos", type: "Artesanato" }
+    { id: 1, 
+    name: "Feira de Casa Amarela", 
+    zone: "Norte", 
+    address: "Mercado de Casa Amarela, Recife", 
+    days: "Diariamente", 
+    type: "Geral" },
+    { id: 2, 
+    name: "Feira de Boa Viagem", 
+    zone: "Sul", 
+    address: "Praça de Boa Viagem, Recife", 
+    days: "Domingos", 
+    type: "Artesanato e Gastronomia" },
+    { id: 3, 
+    name: "Feira Orgânica do Parnamirim", 
+    zone: "Norte", 
+    address: "Praça do Parnamirim, Recife", 
+    days: "Sábados", 
+    type: "Orgânicos" },
+    { id: 4, 
+    name: "Feira do Cordeiro", 
+    zone: "Oeste", 
+    address: "Parque de Exposições do Cordeiro", 
+    days: "Sábados", 
+    type: "Animais e Geral" },
+    { id: 5, 
+    name: "Feira do Bom Jesus", 
+    zone: "Centro", 
+    address: "Rua do Bom Jesus, Recife Antigo", 
+    days: "Domingos", 
+    type: "Artesanato" }
 ];
