@@ -1,119 +1,124 @@
+// script.js (FINAL, COM FILTRO QUÁDRUPLO)
 document.addEventListener('DOMContentLoaded', () => {
-    // Dados de exemplo (no futuro, virão do seu backend/banco de dados)
-    const mockEvents = [
-        {
-            title: 'Show de Alceu Valença - Aniversário da Cidade',
-            category: 'Música',
-            date: '2025-09-12T21:00:00',
-            location: 'Marco Zero, Recife Antigo',
-            price: 'Gratuito',
-            image: 'https://images.unsplash.com/photo-1598387993441-a364f551403a?q=80&w=400&auto=format&fit=crop',
-        },
-        {
-            title: 'Exposição "Mestres do Barro" de Caruaru',
-            category: 'Arte',
-            date: '2025-09-15T09:00:00',
-            location: 'Cais do Sertão, Recife',
-            price: 'R$ 20',
-            image: 'https://images.unsplash.com/photo-1549887552-cb136696a844?q=80&w=400&auto=format&fit=crop',
-        },
-        {
-            title: 'Mostra de Cinema Nordestino Retrô',
-            category: 'Cinema',
-            date: '2025-09-20T19:00:00',
-            location: 'Cinema da Fundação, Derby',
-            price: 'R$ 15',
-            image: 'https://images.unsplash.com/photo-1627926101822-6b995b42d7b4?q=80&w=400&auto=format&fit=crop',
-        },
-        {
-            title: 'Peça "Lisbela e o Prisioneiro"',
-            category: 'Teatro',
-            date: '2025-09-27T20:30:00',
-            location: 'Teatro de Santa Isabel, Santo Antônio',
-            price: 'R$ 60',
-            image: 'https://images.unsplash.com/photo-1596003716873-9b0a7b5220c3?q=80&w=400&auto=format&fit=crop',
-        },
-        {
-            title: 'Festival Gastronômico "Sabores de Pernambuco"',
-            category: 'Feira',
-            date: '2025-10-04T12:00:00',
-            location: 'Parque Dona Lindu, Boa Viagem',
-            price: 'Entrada Gratuita',
-            image: 'https://images.unsplash.com/photo-1620706857373-1c04d04a7a8f?q=80&w=400&auto=format&fit=crop',
-        },
-        {
-            title: 'Show da Banda Eddie e convidados',
-            category: 'Música',
-            date: '2025-10-10T22:00:00',
-            location: 'Clube Metrópole, Boa Vista',
-            price: 'R$ 50',
-            image: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=400&auto=format&fit=crop',
-        },
-         {
-            title: 'Feira de Artesanato do Recife Antigo',
-            category: 'Feira',
-            date: '2025-09-28T10:00:00',
-            location: 'Rua do Bom Jesus, Recife Antigo',
-            price: 'Gratuito',
-            image: 'https://images.unsplash.com/photo-1578334462189-f79a6ce6a524?q=80&w=400&auto=format&fit=crop',
-        },
-        {
-            title: 'Oficina de Frevo para Iniciantes',
-            category: 'Arte',
-            date: '2025-10-11T15:00:00',
-            location: 'Paço do Frevo, Recife Antigo',
-            price: 'R$ 30',
-            image: 'https://images.unsplash.com/photo-1678834423832-688049a40236?q=80&w=400&auto=format&fit=crop',
+
+    // ETAPA 1: AGREGAR E NORMALIZAR DADOS (com preço padronizado)
+    let allEvents = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    mockEventsData.forEach(event => {
+        let priceValue = 0;
+        if (event.price && event.price.toLowerCase() !== 'gratuito' && event.price.toLowerCase() !== 'entrada gratuita') {
+            priceValue = parseFloat(event.price.replace('R$', '').replace(',', '.')) || 1;
         }
-    ];
+        allEvents.push({ id: `event-${event.id}`, title: event.title, type: event.category, date: new Date(event.date), location: event.location, image: event.image, link: `evento.html?id=${event.id}`, price: priceValue });
+    });
+    cinemaData.forEach(cinema => cinema.movies.forEach(movie => { const firstSession = movie.sessions.map(s => new Date(s.date + 'T' + s.time)).filter(d => d >= today).sort((a, b) => a - b)[0]; if (firstSession) { allEvents.push({ id: `cinema-${movie.title.replace(/\s/g, '')}`, title: movie.title, type: "Cinema", date: firstSession, location: cinema.name, image: movie.poster, link: 'cinema.html', price: 1 }); } }));
+    teatroData.forEach(teatro => teatro.shows.forEach(show => { const firstSession = show.sessions.filter(s => new Date(s.date + 'T' + s.time) >= today).sort((a, b) => new Date(a.date) - new Date(b.date))[0]; if (firstSession) { allEvents.push({ id: `teatro-${show.title.replace(/\s/g, '')}`, title: show.title, type: "Teatro", date: new Date(firstSession.date + 'T' + firstSession.time), location: teatro.name, image: show.poster, link: 'teatro.html', price: parseFloat(firstSession.price.replace('R$', '')) || 1 }); } }));
+    feirasData.forEach(feira => allEvents.push({ id: `feira-${feira.id}`, title: feira.name, type: "Feira", date: new Date(), location: feira.address, image: 'https://i.imgur.com/c5Bv6g5.jpg', link: 'feiras.html', price: 0 }));
 
-    const eventsContainer = document.getElementById('events-container');
+    const upcomingEvents = allEvents.filter(event => event.date >= today).sort((a, b) => a.date - b.date);
 
-    // Função para renderizar os eventos na tela
-    function renderEvents(events) {
-        if (!eventsContainer) return; // Não executa se o container não existir na página
-        
-        eventsContainer.innerHTML = ''; // Limpa a área antes de adicionar novos eventos
-        events.forEach(event => {
-            const eventDate = new Date(event.date);
-            const formattedDate = eventDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
-            const formattedTime = eventDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-            const eventCard = `
-                <div class="event-card">
-                    <img src="${event.image}" alt="${event.title}">
-                    <div class="event-info">
-                        <span class="category">${event.category}</span>
-                        <h3>${event.title}</h3>
-                        <p><i class="far fa-calendar-alt"></i> ${formattedDate} às ${formattedTime}</p>
-                        <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
-                    </div>
-                    <div class="event-actions">
-                        <span class="price">${event.price}</span>
-                        <button class="favorite-btn" title="Adicionar aos Favoritos">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            eventsContainer.innerHTML += eventCard;
-        });
-    }
-
-    // Inicializa a página mostrando todos os eventos
-    renderEvents(mockEvents);
+    // CAPTURAR ELEMENTOS DA PÁGINA
+    const searchInput = document.getElementById('search-input');
+    const priceFilterSelect = document.getElementById('price-filter');
+    const dateFilterInput = document.getElementById('date-filter');
+    const categoryFilterNav = document.querySelector('.filter-nav');
+    const eventsGrid = document.getElementById('events-grid');
+    const clearFiltersBtn = document.getElementById('clear-filters-btn');
     
-    // Adiciona funcionalidade ao botão de favoritar (visual)
-    if (eventsContainer) {
-        eventsContainer.addEventListener('click', function(e) {
-            if (e.target.closest('.favorite-btn')) {
-                const button = e.target.closest('.favorite-btn');
-                const icon = button.querySelector('i');
-                button.classList.toggle('active');
-                icon.classList.toggle('far'); // ícone de contorno
-                icon.classList.toggle('fas'); // ícone preenchido
-            }
-        });
+    // VARIÁVEL DE ESTADO PARA O FILTRO DE CATEGORIA
+    let activeCategoryFilter = 'Todos';
+
+    // FUNÇÕES
+   // EM script.js, DENTRO DE createEventCard
+
+    function createEventCard(event) {
+        const formattedDate = event.date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        const formattedTime = event.date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        
+        // Adicionamos o <div class="event-actions"> e o botão
+        return `<div class="event-card">
+            <a href="${event.link}" class="event-card-link">
+                <img src="${event.image}" alt="${event.title}">
+                <div class="event-info">
+                    <span class="category">${event.type}</span>
+                    <h3>${event.title}</h3>
+                    <p><i class="far fa-calendar-alt"></i> ${formattedDate} às ${formattedTime}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                </div>
+            </a>
+            <div class="event-actions">
+                <button class="add-schedule-btn" data-event-title="${event.title}" data-event-date="${event.date.toISOString()}" data-event-location="${event.location}">🗓️ Adicionar à Programação</button>
+            </div>
+        </div>`;
+    }
+    
+    function renderEvents(eventsToRender) {
+        eventsGrid.innerHTML = '';
+        if (eventsToRender.length === 0) {
+            eventsGrid.innerHTML = "<p class='empty-state'>Nenhum evento encontrado. Tente outros filtros! 🧐</p>";
+            return;
+        }
+        eventsToRender.forEach(event => { eventsGrid.innerHTML += createEventCard(event); });
     }
 
+    function applyFilters() {
+        let filteredEvents = upcomingEvents;
+
+        // 1. Filtro de CATEGORIA
+        if (activeCategoryFilter !== 'Todos') {
+            filteredEvents = filteredEvents.filter(event => event.type === activeCategoryFilter);
+        }
+
+        // 2. Filtro de PREÇO
+        const priceFilterValue = priceFilterSelect.value;
+        switch (priceFilterValue) {
+            case 'gratuito': filteredEvents = filteredEvents.filter(event => event.price === 0); break;
+            case 'range1': filteredEvents = filteredEvents.filter(event => event.price > 0 && event.price <= 20); break;
+            case 'range2': filteredEvents = filteredEvents.filter(event => event.price > 20 && event.price <= 50); break;
+            case 'range3': filteredEvents = filteredEvents.filter(event => event.price > 50 && event.price <= 100); break;
+            case 'range4': filteredEvents = filteredEvents.filter(event => event.price > 100); break;
+        }
+        
+        // 3. Filtro de DATA
+        const selectedDate = dateFilterInput.value;
+        if (selectedDate) {
+            filteredEvents = filteredEvents.filter(event => event.date.toISOString().split('T')[0] === selectedDate);
+        }
+
+        // 4. Filtro de TEXTO
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        if (searchTerm) {
+            filteredEvents = filteredEvents.filter(event => event.title.toLowerCase().includes(searchTerm));
+        }
+        
+        renderEvents(filteredEvents);
+    }
+
+    // EVENT LISTENERS
+    searchInput.addEventListener('input', applyFilters);
+    priceFilterSelect.addEventListener('change', applyFilters);
+    dateFilterInput.addEventListener('change', applyFilters);
+
+    categoryFilterNav.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            activeCategoryFilter = e.target.dataset.filter;
+            applyFilters();
+        }
+    });
+
+    clearFiltersBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        priceFilterSelect.value = 'todos';
+        dateFilterInput.value = '';
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.filter-btn[data-filter="Todos"]').classList.add('active');
+        activeCategoryFilter = 'Todos';
+        applyFilters();
+    });
+    
+    renderEvents(upcomingEvents);
 });
