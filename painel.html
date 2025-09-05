@@ -3,42 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Painel - Cultura Recife</title>
+    <title>Minha Programação - Perambulando</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="forms.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="painel.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container">
-           <a href="index.html" class="logo-container">
-                <img src="logo.png" alt="Logo Perambulando" class="logo-img">
-            <nav>
-                <a href="index.html">Buscar Eventos</a>
-            </nav>
-            <div class="user-profile">
-                <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
-            </div>
+        <button id="menu-toggle" class="menu-btn" aria-label="Abrir menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <a href="index.html" class="logo-container">
+            <img src="logo.png" alt="Logo Perambulando" class="logo-img">
+            <h1>Perambulando</h1>
+        </a>
+
+        <div class="user-profile">
+            <a href="painel.html" title="Minha Programação"><i class="far fa-calendar-alt"></i></a>
+            <a href="login.html" title="Entrar"><i class="fas fa-user-circle"></i></a>
+            <a href="perto-de-mim.html" title="Perto de Mim"><i class="fas fa-map-marker-alt"></i></a>
         </div>
     </header>
+    <nav id="mobile-menu" class="side-menu">
+        <a href="index.html">Início</a>
+        <a href="cinema.html">Cinema</a>
+        <a href="teatro.html">Teatro</a>
+        <a href="restaurantes.html">Restaurantes</a>
+        <a href="feiras.html">Feiras</a>
+        <a href="shows.html"> Shows</a>
+        <a href="exposicoes.html"> Exposições</a>
+        <a href="lazer.html"> Programas de Lazer</a>
+        <a href="infantil.html"> Programas Infantis</a>
+        <a href="roteiros_prontos.html"> Roteiros Prontos</a>
+        <a href="eventos-do-dia.html" style="color: red;">🔥 Eventos do Dia</a>
+        <a href="painel.html">Minha Programação</a>
+        <a href="login.html">Login / Cadastro</a>
+</nav>
+        </nav>
+    <div id="overlay"></div>
 
     <main class="container">
         <div class="panel-header">
-            <h2 id="welcome-message">Bem-vindo(a)!</h2>
-            <p>Aqui você gerencia seus rolês e eventos favoritos.</p>
+            <h2 id="welcome-message">Sua Programação</h2>
+            <p>Organize seu dia e não perca nenhum evento!</p>
         </div>
 
-        <div class="panel-grid">
-            <section class="panel-section">
-                <h3><i class="fas fa-heart"></i> Meus Favoritos</h3>
-                <p class="empty-state">Você ainda não favoritou nenhum evento. Que tal <a href="index.html">explorar alguns</a>?</p>
-                </section>
-            
-            <section class="panel-section">
-                <h3><i class="far fa-calendar-alt"></i> Minha Programação do Dia</h3>
-                <textarea placeholder="Planeje seu dia aqui... Ex: 19h - Jantar no restaurante X, 21h - Peça no Teatro Y"></textarea>
-                 </section>
+        <div class="agenda-layout">
+            <div class="agenda-controls">
+                <h3 style="color:var(--primary-color)">Selecione o Dia</h3>
+                <input type="date" id="date-picker" class="filter-select">
+                
+                <div class="add-note-form">
+                    <h4>Adicionar Anotação Pessoal</h4>
+                    <form id="add-note">
+                        <input type="time" id="note-time" required>
+                        <input type="text" id="note-title" placeholder="Ex: Jantar no Leite" required>
+                        <button type="submit" style="background-color: rgb(2, 212, 2); ">Adicionar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="agenda-list-container">
+                <h3 id="schedule-title">Programação para Hoje</h3>
+                <ul id="schedule-list">
+                    </ul>
+            </div>
         </div>
     </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <p>&copy; 2025 Perambulando. Todos os direitos reservados.</p>
+                    <p>Seu guia para desbravar a cultura do Recife.</p>
+                </div>
+                <div class="footer-social">
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Contato por E-mail"><i class="fss fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script src="painel.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
