@@ -1,0 +1,16 @@
+/* exposicoes.css */
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+/* Os estilos principais (.events-grid, .event-card, etc) são herdados do style.css */

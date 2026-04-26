@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema - Perambulando</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cinema.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button id="menu-toggle" class="menu-btn" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="logo-container"><img src="logo.png" alt="Logo Perambulando" class="logo-img"><h1>Perambulando</h1></a>
+            <div class="user-profile"><a href="painel.html" title="Minha Programação"><i class="far fa-calendar-alt"></i></a><a href="login.html" title="Entrar"><i class="fas fa-user-circle"></i></a></div>
+        </div>
+    </header>
+    <nav id="mobile-menu" class="side-menu">
+    <a href="index.html">Início</a>
+    <a href="cinema.html">Cinema</a>
+    <a href="teatro.html">Teatro</a>
+    <a href="restaurantes.html">Restaurantes</a>
+    <a href="feiras.html">Feiras</a>
+    <a href="index.html#shows"> Shows</a>
+    <a href="index.html#exposicoes"> Exposições</a>
+    <a href="index.html#lazer"> Programas de Lazer</a>
+    <a href="index.html#infantil"> Programas Infantis</a>
+    <a href="index.html#eventos-do-dia" style="color: red;">🔥 Eventos do Dia</a>
+    <a href="painel.html">Minha Programação</a>
+    <a href="login.html">Login / Cadastro</a>
+    </nav>
+        </nav>
+    <div id="overlay"></div>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Em Cartaz nos Cinemas 🍿</h1>
+            <p>Confira a programação completa do Recife e Região Metropolitana</p>
+        </div>
+
+        <div id="date-selector" class="date-selector-container">
+        </div>
+        <div id="cinema-listings">
+            <p class="loading-placeholder">Carregando programação...</p>
+        </div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container"><div class="footer-content"><div class="footer-about"><p>© 2025 Perambulando. Todos os direitos reservados.</p><p>Seu guia para desbravar a cultura do Recife.</p></div><div class="footer-social"><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a><a href="#" title="Contato por E-mail"><i class="fas fa-envelope"></i></a></div></div></div>
+        <div id="modal-overlay" class="modal-overlay"></div>
+
+            <div id="session-modal" class="modal">
+                <div class="modal-header">
+                    <h2 id="modal-title">Detalhes da Sessão</h2>
+                    <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+                </div>
+                <div id="modal-body" class="modal-body">
+            <section class="reviews-section">
+                <h2>Avaliações e Comentários</h2>
+
+                <div id="reviews-summary" class="reviews-summary">
+                    </div>
+
+                <div class="review-form-container">
+                    <h3>Deixe sua avaliação</h3>
+                    <form id="review-form">
+                        <div class="form-group">
+                            <label>Sua nota:</label>
+                            <div class="star-rating">
+                                <input type="radio" id="5-stars" name="rating" value="5" required /><label for="5-stars" class="star">&#9733;</label>
+                                <input type="radio" id="4-stars" name="rating" value="4" /><label for="4-stars" class="star">&#9733;</label>
+                                <input type="radio" id="3-stars" name="rating" value="3" /><label for="3-stars" class="star">&#9733;</label>
+                                <input type="radio" id="2-stars" name="rating" value="2" /><label for="2-stars" class="star">&#9733;</label>
+                                <input type="radio" id="1-star" name="rating" value="1" /><label for="1-star" class="star">&#9733;</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="review-author">Seu nome:</label>
+                            <input type="text" id="review-author" placeholder="Anônimo">
+                        </div>
+                        <div class="form-group">
+                            <label for="review-comment">Seu comentário:</label>
+                            <textarea id="review-comment" rows="4" placeholder="O que você achou do evento?" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-review-btn">Enviar Avaliação</button>
+                    </form>
+                </div>
+
+                <div id="reviews-list" class="reviews-list">
+                    </div>
+            </section>
+        </div>
+    <div class="modal-footer">
+        <button class="buy-ticket-btn">Comprar Ingressos</button>
+    </div>
+</div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="cinema.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

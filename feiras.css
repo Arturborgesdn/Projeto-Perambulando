@@ -1,0 +1,100 @@
+/* feiras.css */
+
+.page-header { text-align: center; margin-bottom: 40px; }
+.filter-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+.filter-btn {  font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    padding: 10px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease; }
+
+.filter-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.feiras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.feiras-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* 1 parte para a lista, 1.5 para o mapa */
+    gap: 30px;
+}
+
+.feiras-list-container {
+    max-height: 600px; /* Altura máxima para a lista */
+    overflow-y: auto; /* Adiciona barra de rolagem se a lista for longa */
+    padding-right: 15px;
+}
+
+.map-container {
+    height: 600px; /* Altura fixa para o mapa */
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.feira-card {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.feira-card:hover, .feira-card.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0, 127, 245, 0.2);
+    transform: translateY(-2px);
+}
+
+.feira-card h3 {
+    font-size: 1.2rem;
+    color: var(--dark-color);
+    margin-bottom: 8px;
+}
+
+.feira-card p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.type-badge {
+    background-color: #eaf2f8; color: #3498db; padding: 4px 8px; border-radius: 20px;
+    font-size: 0.8rem; display: inline-block; margin-top: 10px; font-weight: 600;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 992px) {
+    .feiras-layout {
+        grid-template-columns: 1fr; /* Uma coluna só */
+    }
+    .feiras-list-container {
+        max-height: none; /* Remove a altura máxima */
+        order: 2; /* Coloca a lista depois do mapa */
+    }
+    .map-container {
+        order: 1; /* Coloca o mapa antes da lista */
+        height: 400px; /* Diminui a altura do mapa */
+    }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feiras de Bairro - Perambulando</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="feiras.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button id="menu-toggle" class="menu-btn" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="logo-container"><img src="logo.png" alt="Logo Perambulando" class="logo-img"><h1>Perambulando</h1></a>
+            <div class="user-profile"><a href="painel.html" title="Minha Programação"><i class="far fa-calendar-alt"></i></a><a href="login.html" title="Entrar"><i class="fas fa-user-circle"></i></a></div>
+        </div>
+    </header>
+    <nav id="mobile-menu" class="side-menu">
+         <a href="index.html">Início</a>
+            <a href="cinema.html">Cinema</a>
+            <a href="teatro.html">Teatro</a>
+            <a href="restaurantes.html">Restaurantes</a>
+            <a href="feiras.html">Feiras</a>
+            <a href="shows.html"> Shows</a>
+            <a href="exposicoes.html"> Exposições</a>
+            <a href="lazer.html"> Programas de Lazer</a>
+            <a href="infantil.html"> Programas Infantis</a>
+            <a href="eventos-do-dia.html" style="color: red;">🔥 Eventos do Dia</a>
+            <a href="painel.html">Minha Programação</a>
+            <a href="login.html">Login / Cadastro</a>
+        </nav>
+    <div id="overlay"></div>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Feiras de Bairro 🌽</h1>
+            <p>Encontre feiras orgânicas, de artesanato e gastronômicas pela cidade</p>
+        </div>
+
+        <nav class="filter-nav">
+            <button class="filter-btn active" data-filter="Todas">Todas</button>
+            <button class="filter-btn" data-filter="Norte">Zona Norte</button>
+            <button class="filter-btn" data-filter="Sul">Zona Sul</button>
+            <button class="filter-btn" data-filter="Oeste">Zona Oeste</button>
+            <button class="filter-btn" data-filter="Centro">Centro</button>
+        </nav>
+        
+        <div id="feiras-grid" class="feiras-grid">
+            <p class="loading-placeholder">Carregando feiras...</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        </footer>
+    <script src="data.js"></script>
+    <script src="feiras.js"></script>
+    <script src="main.js"></script>
+
+    </body>
+</html>

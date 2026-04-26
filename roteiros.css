@@ -1,0 +1,86 @@
+/* roteiros.css */
+.page-header { text-align: center; margin-bottom: 40px; }
+.page-filters { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+
+.roteiro-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+    padding: 30px;
+}
+
+.roteiro-card h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.roteiro-card .description {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+/* A Mágica do Caminho/Linha do Tempo */
+.roteiro-path {
+    position: relative;
+    padding-left: 30px;
+    border-left: 3px solid #e0e0e0; /* A linha vertical principal */
+}
+
+.path-step {
+    position: relative;
+    margin-bottom: 30px;
+    padding-left: 20px;
+}
+.path-step:last-child {
+    margin-bottom: 0;
+}
+
+/* O "ponto" na linha do tempo */
+.path-step::before {
+    content: '';
+    position: absolute;
+    left: -40px;
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+    border: 3px solid #fff;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.step-header i {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.step-header .time {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+}
+
+.step-content h4 {
+    font-size: 1.2rem;
+    margin: 0 0 5px 0;
+}
+.step-content p {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0;
+}
+
+/* Cores diferentes para os "pontos" da timeline */
+.path-step[data-type="Evento Principal"]::before { background-color: var(--primary-color); }
+.path-step[data-type="Alimentação"]::before { background-color: #f78000; } /* Laranja */
