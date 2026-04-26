@@ -17,7 +17,6 @@ export default function Header() {
 
           <Link to="/" className="logo-container">
             <img src="/logo.png" alt="Logo Perambulando" className="logo-img" />
-            <h1>Perambulando</h1>
           </Link>
 
           <div className="user-profile">
