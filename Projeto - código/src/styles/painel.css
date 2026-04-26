@@ -1,0 +1,17 @@
+/* painel.css */
+.panel-header { text-align: center; margin-bottom: 40px; }
+.agenda-layout { display: grid; grid-template-columns: 300px 1fr; gap: 40px; }
+.agenda-controls h3, .agenda-list-container h3 { font-size: 1.5rem; margin-bottom: 15px; }
+.add-note-form { margin-top: 30px; background: #f9f9f9; padding: 20px; border-radius: 10px; }
+#add-note { display: flex; flex-direction: column; gap: 10px; }
+#add-note input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+#add-note button { background: var(--secondary-color); color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+
+#schedule-list { list-style: none; padding: 0; }
+.schedule-item { display: flex; align-items: center; gap: 15px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 10px; }
+.schedule-item-time { font-weight: bold; font-size: 1.1rem; background: var(--primary-color); color: white; padding: 8px 12px; border-radius: 5px; }
+.schedule-item-content h4 { margin: 0 0 5px 0; }
+.schedule-item-content p { margin: 0; color: #666; font-size: 0.9rem; }
+.schedule-item-delete { margin-left: auto; background: none; border: none; color: #ccc; font-size: 1.2rem; cursor: pointer; }
+.schedule-item-delete:hover { color: red; }
+@media (max-width: 768px) { .agenda-layout { grid-template-columns: 1fr; } }

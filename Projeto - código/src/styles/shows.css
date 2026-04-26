@@ -1,0 +1,16 @@
+/* shows.css */
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+/* O estilo .events-grid e .event-card já vem do style.css principal */
