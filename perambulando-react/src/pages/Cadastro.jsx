@@ -5,27 +5,46 @@ import Footer from '../components/Footer'
 
 export default function Cadastro() {
   const navigate = useNavigate()
+  const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
+    setError('')
+    
     if (password !== confirm) {
       setError('As senhas não coincidem.')
       return
     }
-    const users = JSON.parse(localStorage.getItem('users') || '[]')
-    if (users.find(u => u.email === email)) {
-      setError('Este e-mail já está cadastrado.')
-      return
+
+    try {
+      const response = await fetch('http://localhost:3001/api/clientes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nome,
+          email,
+          senha: password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao realizar cadastro')
+      }
+
+      setSuccess(true)
+      setTimeout(() => navigate('/login'), 2000)
+    } catch (err) {
+      setError(err.message)
     }
-    users.push({ email, password })
-    localStorage.setItem('users', JSON.stringify(users))
-    setSuccess(true)
-    setTimeout(() => navigate('/login'), 2000)
   }
 
   return (
@@ -37,6 +56,16 @@ export default function Cadastro() {
           {error && <p style={{ color: 'red', marginBottom: 15 }}>{error}</p>}
           {success && <p style={{ color: 'green', marginBottom: 15 }}>Cadastro realizado! Redirecionando para o login...</p>}
           <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="nome">Nome Completo</label>
+              <input
+                type="text"
+                id="nome"
+                value={nome}
+                onChange={e => setNome(e.target.value)}
+                required
+              />
+            </div>
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input

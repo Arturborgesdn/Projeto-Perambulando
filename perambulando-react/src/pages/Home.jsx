@@ -1,63 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import EventCard from '../components/EventCard'
 import Carousel from '../components/Carousel'
-import { mockEventsData, cinemaData, teatroData, feirasData } from '../data/data'
-
-function buildAllEvents() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const all = []
-
-  mockEventsData.forEach(event => {
-    let priceValue = 0
-    if (event.price && !['gratuito', 'entrada gratuita'].includes(event.price.toLowerCase())) {
-      priceValue = parseFloat(event.price.replace('R$', '').replace(',', '.')) || 1
-    }
-    all.push({
-      id: `event-${event.id}`,
-      title: event.title,
-      type: event.category,
-      date: new Date(event.date),
-      location: event.location,
-      image: event.image,
-      link: `/evento/${event.id}`,
-      price: priceValue,
-    })
-  })
-
-  cinemaData.forEach(cinema =>
-    cinema.movies.forEach(movie => {
-      const first = movie.sessions
-        .map(s => new Date(`${s.date}T${s.time}`))
-        .filter(d => d >= today)
-        .sort((a, b) => a - b)[0]
-      if (first) {
-        all.push({ id: `cinema-${movie.title}`, title: movie.title, type: 'Cinema', date: first, location: cinema.name, image: movie.poster, link: '/cinema', price: 1 })
-      }
-    })
-  )
-
-  teatroData.forEach(teatro =>
-    teatro.shows.forEach(show => {
-      const first = show.sessions
-        .filter(s => new Date(`${s.date}T${s.time}`) >= today)
-        .sort((a, b) => new Date(a.date) - new Date(b.date))[0]
-      if (first) {
-        all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Teatro', date: new Date(`${first.date}T${first.time}`), location: teatro.name, image: show.poster, link: '/teatro', price: parseFloat(first.price.replace('R$', '')) || 1 })
-      }
-    })
-  )
-
-  feirasData.forEach(feira =>
-    all.push({ id: `feira-${feira.id}`, title: feira.name, type: 'Feira', date: new Date(), location: feira.address, image: 'https://i.imgur.com/c5Bv6g5.jpg', link: '/feiras', price: 0 })
-  )
-
-  return all.filter(e => e.date >= today).sort((a, b) => a.date - b.date)
-}
-
-const allUpcoming = buildAllEvents()
+import { cinemaData, teatroData, feirasData } from '../data/data'
 
 const CATEGORIES_WITH_ICONS = [
   { name: 'Todos', icon: 'fas fa-th-large' },
@@ -71,10 +17,78 @@ const CATEGORIES_WITH_ICONS = [
 ]
 
 export default function Home() {
+  const [eventsFromApi, setEventsFromApi] = useState([])
   const [search, setSearch] = useState('')
   const [price, setPrice] = useState('todos')
   const [date, setDate] = useState('')
   const [category, setCategory] = useState('Todos')
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const response = await fetch('http://localhost:3001/api/eventos')
+        const data = await response.json()
+        setEventsFromApi(data)
+      } catch (error) {
+        console.error('Erro ao buscar eventos:', error)
+      }
+    }
+    fetchEvents()
+  }, [])
+
+  const allUpcoming = useMemo(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const all = []
+
+    // Dados da API
+    eventsFromApi.forEach(event => {
+      let priceValue = 0
+      if (event.price && !['gratuito', 'entrada gratuita'].includes(event.price.toLowerCase())) {
+        priceValue = parseFloat(event.price.replace('R$', '').replace(',', '.')) || 1
+      }
+      all.push({
+        id: `event-${event.id}`,
+        title: event.title,
+        type: event.category,
+        date: new Date(event.date),
+        location: event.location,
+        image: event.image,
+        link: `/evento/${event.id}`,
+        price: priceValue,
+      })
+    })
+
+    // Dados estáticos
+    cinemaData.forEach(cinema =>
+      cinema.movies.forEach(movie => {
+        const first = movie.sessions
+          .map(s => new Date(`${s.date}T${s.time}`))
+          .filter(d => d >= today)
+          .sort((a, b) => a - b)[0]
+        if (first) {
+          all.push({ id: `cinema-${movie.title}`, title: movie.title, type: 'Cinema', date: first, location: cinema.name, image: movie.poster, link: '/cinema', price: 1 })
+        }
+      })
+    )
+
+    teatroData.forEach(teatro =>
+      teatro.shows.forEach(show => {
+        const first = show.sessions
+          .filter(s => new Date(`${s.date}T${s.time}`) >= today)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))[0]
+        if (first) {
+          all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Teatro', date: new Date(`${first.date}T${first.time}`), location: teatro.name, image: show.poster, link: '/teatro', price: parseFloat(first.price.replace('R$', '')) || 1 })
+        }
+      })
+    )
+
+    feirasData.forEach(feira =>
+      all.push({ id: `feira-${feira.id}`, title: feira.name, type: 'Feira', date: new Date(), location: feira.address, image: 'https://i.imgur.com/c5Bv6g5.jpg', link: '/feiras', price: 0 })
+    )
+
+    return all.filter(e => e.date >= today).sort((a, b) => a.date - b.date)
+  }, [eventsFromApi])
 
   const filtered = useMemo(() => {
     let result = allUpcoming
@@ -94,7 +108,7 @@ export default function Home() {
     if (search.trim()) result = result.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
 
     return result
-  }, [search, price, date, category])
+  }, [allUpcoming, search, price, date, category])
 
   const grouped = useMemo(() => {
     if (category !== 'Todos') return null
