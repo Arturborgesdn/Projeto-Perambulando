@@ -11,7 +11,8 @@ function getRatingClass(rating) {
 function ShowModal({ details, onClose }) {
   if (!details) return null
   const { teatroName, showTitle, session } = details
-  const show = teatroData.flatMap(t => t.shows).find(s => s.title === showTitle)
+  const teatro = teatroData.find(t => t.name === teatroName)
+  const show = teatro?.shows.find(s => s.title === showTitle)
   const formattedDate = new Date(`${session.date}T12:00:00`).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })
 
   function addToSchedule() {
@@ -38,14 +39,29 @@ function ShowModal({ details, onClose }) {
           <p><strong>Teatro:</strong> {teatroName}</p>
           <p><strong>Sessão:</strong> {session.time} — {formattedDate}</p>
           <p><strong>Preço:</strong> {session.price}</p>
-          <h3 style={{ marginTop: 16 }}>Sinopse</h3>
+
+          <div className="event-detail-actions" style={{ marginTop: 20 }}>
+            <button className="btn-submit" onClick={addToSchedule}>
+              🗓️ Adicionar à Minha Programação
+            </button>
+            {teatro?.instagramLink && (
+              <a href={teatro.instagramLink} target="_blank" rel="noopener noreferrer" className="btn-instagram">
+                <i className="fab fa-instagram"></i> Ver Teatro no Instagram
+              </a>
+            )}
+          </div>
+
+          <h3 style={{ marginTop: 20 }}>Sinopse</h3>
           <p>{show?.synopsis}</p>
-          <button className="add-schedule-btn" style={{ marginTop: 16 }} onClick={addToSchedule}>
-            🗓️ Adicionar à Minha Programação
-          </button>
         </div>
         <div className="modal-footer">
-          <button className="buy-ticket-btn">Comprar Ingressos</button>
+          {teatro?.ticketLink ? (
+            <a href={teatro.ticketLink} target="_blank" rel="noopener noreferrer" className="btn-ticket" style={{ width: '100%' }}>
+              <i className="fas fa-ticket-alt"></i> Comprar Ingressos
+            </a>
+          ) : (
+            <button className="buy-ticket-btn" style={{ width: '100%' }}>Comprar Ingressos</button>
+          )}
         </div>
       </div>
     </>

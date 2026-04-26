@@ -20,6 +20,9 @@ export default function Header() {
           </Link>
 
           <div className="user-profile">
+            <Link to="/seu-evento" title="Divulgue seu Evento">
+              <i className="fas fa-plus-circle"></i>
+            </Link>
             <Link to="/painel" title="Minha Programação">
               <i className="far fa-calendar-alt"></i>
             </Link>
@@ -32,6 +35,9 @@ export default function Header() {
 
       <nav className={`side-menu ${menuOpen ? 'open' : ''}`} style={menuOpen ? { transform: 'translateX(0)' } : {}}>
         <Link to="/" onClick={closeMenu}>Início</Link>
+        <Link to="/seu-evento" onClick={closeMenu} style={{ color: 'var(--primary-color)' }}>
+          ➕ Divulgue seu Evento
+        </Link>
         <Link to="/cinema" onClick={closeMenu}>Cinema</Link>
         <Link to="/teatro" onClick={closeMenu}>Teatro</Link>
         <Link to="/restaurantes" onClick={closeMenu}>Restaurantes</Link>

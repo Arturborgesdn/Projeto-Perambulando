@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import EventCard from '../components/EventCard'
+import Carousel from '../components/Carousel'
 import { mockEventsData, cinemaData, teatroData, feirasData } from '../data/data'
 
 function buildAllEvents() {
@@ -58,7 +59,16 @@ function buildAllEvents() {
 
 const allUpcoming = buildAllEvents()
 
-const CATEGORIES = ['Todos', 'Shows', 'Cinema', 'Teatro', 'Exposições', 'Feira', 'Lazer', 'Infantil']
+const CATEGORIES_WITH_ICONS = [
+  { name: 'Todos', icon: 'fas fa-th-large' },
+  { name: 'Shows', icon: 'fas fa-music' },
+  { name: 'Cinema', icon: 'fas fa-film' },
+  { name: 'Teatro', icon: 'fas fa-masks-theater' },
+  { name: 'Exposições', icon: 'fas fa-palette' },
+  { name: 'Feira', icon: 'fas fa-store' },
+  { name: 'Lazer', icon: 'fas fa-umbrella-beach' },
+  { name: 'Infantil', icon: 'fas fa-child' },
+]
 
 export default function Home() {
   const [search, setSearch] = useState('')
@@ -86,6 +96,17 @@ export default function Home() {
     return result
   }, [search, price, date, category])
 
+  const grouped = useMemo(() => {
+    if (category !== 'Todos') return null
+    
+    const groups = {}
+    filtered.forEach(event => {
+      if (!groups[event.type]) groups[event.type] = []
+      groups[event.type].push(event)
+    })
+    return groups
+  }, [filtered, category])
+
   function clearFilters() {
     setSearch('')
     setPrice('todos')
@@ -97,6 +118,7 @@ export default function Home() {
     <div>
       <Header />
       <main className="container">
+        <Carousel />
         <section className="search-filter-box">
           <h2>Encontre o rolê perfeito! 😉</h2>
 
@@ -125,27 +147,41 @@ export default function Home() {
             <button type="button" className="clear-btn" onClick={clearFilters}>Limpar</button>
           </form>
 
-          <nav className="filter-nav">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                className={`filter-btn ${category === cat ? 'active' : ''}`}
-                onClick={() => setCategory(cat)}
+          <nav className="category-cards-nav">
+            {CATEGORIES_WITH_ICONS.map(cat => (
+              <div
+                key={cat.name}
+                className={`category-card-btn ${category === cat.name ? 'active' : ''}`}
+                onClick={() => setCategory(cat.name)}
               >
-                {cat}
-              </button>
+                <i className={cat.icon}></i>
+                <span>{cat.name}</span>
+              </div>
             ))}
           </nav>
         </section>
 
         <section className="category-section">
-          <div className="events-grid">
-            {filtered.length === 0 ? (
-              <p className="empty-state">Nenhum evento encontrado. Tente outros filtros! 🧐</p>
+          {filtered.length === 0 ? (
+            <p className="empty-state">Nenhum evento encontrado. Tente outros filtros! 🧐</p>
+          ) : (
+            category === 'Todos' ? (
+              Object.keys(grouped).map(catName => (
+                <div key={catName} className="grouped-category-section">
+                  <h3 className="section-title">{catName}</h3>
+                  <div className="events-grid small-cards">
+                    {grouped[catName].map(event => (
+                      <EventCard key={event.id} event={event} isSmall={true} />
+                    ))}
+                  </div>
+                </div>
+              ))
             ) : (
-              filtered.map(event => <EventCard key={event.id} event={event} />)
-            )}
-          </div>
+              <div className="events-grid">
+                {filtered.map(event => <EventCard key={event.id} event={event} />)}
+              </div>
+            )
+          )}
         </section>
       </main>
       <Footer />

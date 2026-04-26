@@ -43,33 +43,66 @@ export default function Evento() {
     <div>
       <Header />
       <main className="container">
-        <div id="event-detail-content">
-          <img src={event.image} alt={event.title} className="event-detail-image" />
-
-          <div className="event-detail-header">
-            <span className="category">{event.category}</span>
-            <h1 style={{ fontSize: '2rem', margin: '10px 0', color: 'var(--dark-color)' }}>{event.title}</h1>
+        <div className="event-detail-content">
+          <div className="event-hero">
+            <img src={event.image} alt={event.title} className="event-hero-img" />
+            <div className="event-hero-overlay">
+              <span className="category" style={{ backgroundColor: 'var(--primary-color)' }}>{event.category}</span>
+              <h1 style={{ fontSize: '2.5rem', marginTop: '15px' }}>{event.title}</h1>
+            </div>
           </div>
 
-          <div className="event-detail-meta">
-            <p><i className="far fa-calendar-alt"></i> {formattedDate} às {formattedTime}</p>
-            <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
-            <p><i className="fas fa-tag"></i> {event.price}</p>
-            {event.genre && <p><i className="fas fa-music"></i> {event.genre}</p>}
-          </div>
+          <div className="event-detail-info-container">
+            <div className="event-description">
+              <h2>Sobre o Evento</h2>
+              <p>{event.description}</p>
+            </div>
 
-          <div className="event-detail-body">
-            <h2>Sobre o Evento</h2>
-            <p>{event.description}</p>
-          </div>
+            <div className="event-sidebar">
+              <div className="event-meta-card">
+                <div className="event-meta-item">
+                  <i className="far fa-calendar-alt"></i>
+                  <span>{formattedDate}</span>
+                </div>
+                <div className="event-meta-item">
+                  <i className="far fa-clock"></i>
+                  <span>{formattedTime}</span>
+                </div>
+                <div className="event-meta-item">
+                  <i className="fas fa-map-marker-alt"></i>
+                  <span>{event.location}</span>
+                </div>
+                <div className="event-meta-item">
+                  <i className="fas fa-tag"></i>
+                  <span>{event.price}</span>
+                </div>
+                {event.genre && (
+                  <div className="event-meta-item">
+                    <i className="fas fa-music"></i>
+                    <span>{event.genre}</span>
+                  </div>
+                )}
+              </div>
 
-          <div style={{ marginTop: 30, display: 'flex', gap: 15 }}>
-            <button className="add-schedule-btn" style={{ padding: '12px 25px', fontSize: '1rem' }} onClick={addToSchedule}>
-              🗓️ Adicionar à Programação
-            </button>
-            <Link to="/" style={{ padding: '12px 25px', border: '2px solid #ddd', borderRadius: 8, textDecoration: 'none', color: 'var(--text-color)', fontWeight: 600 }}>
-              ← Voltar
-            </Link>
+              <div className="event-detail-actions">
+                <button className="btn-submit" onClick={addToSchedule}>
+                  🗓️ Adicionar à Programação
+                </button>
+                {event.ticketLink && (
+                  <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" className="btn-ticket">
+                    <i className="fas fa-ticket-alt"></i> Comprar Ingresso
+                  </a>
+                )}
+                {event.instagramLink && (
+                  <a href={event.instagramLink} target="_blank" rel="noopener noreferrer" className="btn-instagram">
+                    <i className="fab fa-instagram"></i> Ver no Instagram
+                  </a>
+                )}
+                <Link to="/" className="back-link">
+                  ← Voltar para a busca
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </main>

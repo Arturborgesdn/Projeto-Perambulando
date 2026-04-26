@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-export default function EventCard({ event }) {
+export default function EventCard({ event, isSmall }) {
   const formattedDate = event.date.toLocaleDateString('pt-BR', {
     day: '2-digit', month: 'long', year: 'numeric'
   })
@@ -25,19 +25,19 @@ export default function EventCard({ event }) {
   }
 
   return (
-    <div className="event-card">
+    <div className={`event-card ${isSmall ? 'event-card-small' : ''}`}>
       <Link to={event.link || `/evento/${event.id}`} className="event-card-link">
         <img src={event.image} alt={event.title} />
         <div className="event-info">
           <span className="category">{event.type}</span>
           <h3>{event.title}</h3>
           <p><i className="far fa-calendar-alt"></i> {formattedDate} às {formattedTime}</p>
-          <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
+          {!isSmall && <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>}
         </div>
       </Link>
       <div className="event-actions">
         <button className="add-schedule-btn" onClick={addToSchedule}>
-          🗓️ Adicionar à Programação
+          {isSmall ? '🗓️' : '🗓️ Adicionar à Programação'}
         </button>
       </div>
     </div>

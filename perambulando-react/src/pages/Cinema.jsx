@@ -24,11 +24,11 @@ function getRatingClass(rating) {
 function SessionModal({ details, onClose }) {
   if (!details) return null
   const { cinemaName, movieTitle, sessionTime, sessionType, date } = details
-  const movie = cinemaData.flatMap(c => c.movies).find(m => m.title === movieTitle)
+  const cinema = cinemaData.find(c => c.name === cinemaName)
+  const movie = cinema?.movies.find(m => m.title === movieTitle)
   const formattedDate = new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })
 
   function addToSchedule() {
-    const dateObj = new Date(`${date}T${sessionTime}`)
     const dateKey = date
     const newItem = {
       id: Date.now(),
@@ -57,14 +57,29 @@ function SessionModal({ details, onClose }) {
           <p><strong>Classificação:</strong> {movie?.rating}</p>
           <p><strong>Cinema:</strong> {cinemaName}</p>
           <p><strong>Sessão:</strong> {sessionTime} ({sessionType}) — {formattedDate}</p>
-          <h3 style={{ marginTop: 16 }}>Sinopse</h3>
+          
+          <div className="event-detail-actions" style={{ marginTop: 20 }}>
+            <button className="btn-submit" onClick={addToSchedule}>
+              🗓️ Adicionar à Minha Programação
+            </button>
+            {cinema?.instagramLink && (
+              <a href={cinema.instagramLink} target="_blank" rel="noopener noreferrer" className="btn-instagram">
+                <i className="fab fa-instagram"></i> Ver Cinema no Instagram
+              </a>
+            )}
+          </div>
+
+          <h3 style={{ marginTop: 20 }}>Sinopse</h3>
           <p>{movie?.synopsis}</p>
-          <button className="add-schedule-btn" style={{ marginTop: 16 }} onClick={addToSchedule}>
-            🗓️ Adicionar à Minha Programação
-          </button>
         </div>
         <div className="modal-footer">
-          <button className="buy-ticket-btn">Comprar Ingressos</button>
+          {cinema?.ticketLink ? (
+            <a href={cinema.ticketLink} target="_blank" rel="noopener noreferrer" className="btn-ticket" style={{ width: '100%' }}>
+              <i className="fas fa-ticket-alt"></i> Comprar Ingressos
+            </a>
+          ) : (
+            <button className="buy-ticket-btn" style={{ width: '100%' }}>Comprar Ingressos</button>
+          )}
         </div>
       </div>
     </>
