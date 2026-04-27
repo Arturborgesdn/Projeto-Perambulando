@@ -9,7 +9,7 @@ export default function SeuEvento() {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
-    category: 'Shows',
+    category: 'Cultural',
     date: '',
     location: '',
     description: '',
@@ -22,7 +22,6 @@ export default function SeuEvento() {
   useEffect(() => {
     const user = localStorage.getItem('currentUser')
     if (!user) {
-      alert('Você precisa estar logado para cadastrar um evento!')
       navigate('/login')
     } else {
       setIsLoggedIn(true)
@@ -50,10 +49,9 @@ export default function SeuEvento() {
 
       if (!response.ok) throw new Error('Erro ao enviar evento')
 
-      alert('Evento enviado com sucesso! Ele aparecerá no site após a aprovação da nossa equipe. 🎉')
       navigate('/')
     } catch (error) {
-      alert('Houve um erro ao enviar seu evento. Tente novamente.')
+      console.error('Houve um erro ao enviar seu evento. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -95,6 +93,9 @@ export default function SeuEvento() {
                   <option value="Feira">Feira</option>
                   <option value="Lazer">Lazer</option>
                   <option value="Infantil">Infantil</option>
+                  <option value="Gastronômico">Gastronômico</option>
+                  <option value="Cultural">Cultural</option>
+                  <option value="Cursos">Cursos</option>
                 </select>
               </div>
 

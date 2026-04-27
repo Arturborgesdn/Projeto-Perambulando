@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import EventCard from '../components/EventCard'
@@ -19,8 +20,6 @@ const CATEGORIES_WITH_ICONS = [
 export default function Home() {
   const [eventsFromApi, setEventsFromApi] = useState([])
   const [search, setSearch] = useState('')
-  const [price, setPrice] = useState('todos')
-  const [date, setDate] = useState('')
   const [category, setCategory] = useState('Todos')
   const scrollRefs = useRef({})
 
@@ -38,47 +37,48 @@ export default function Home() {
   }, [])
 
   const allUpcoming = useMemo(() => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
     const all = []
+    const uniqueCinemas = new Set();
 
     eventsFromApi.forEach(event => {
-      let priceValue = 0
-      if (event.price && !['gratuito', 'entrada gratuita'].includes(event.price.toLowerCase())) {
-        priceValue = parseFloat(event.price.replace('R$', '').replace(',', '.')) || 1
-      }
-      all.push({
-        id: `event-${event.id}`,
-        title: event.title,
-        type: event.category,
-        date: new Date(event.date),
-        location: event.location,
-        image: event.image,
-        link: `/evento/${event.id}`,
-        price: priceValue,
-      })
-    })
-
-    cinemaData.forEach(cinema =>
-      cinema.movies.forEach(movie => {
-        const first = movie.sessions
-          .map(s => new Date(`${s.date}T${s.time}`))
-          .filter(d => d >= today)
-          .sort((a, b) => a - b)[0]
-        if (first) {
-          all.push({ id: `cinema-${movie.title}`, title: movie.title, type: 'Cinema', date: first, location: cinema.name, image: movie.poster, link: '/cinema', price: 1 })
+      if (event.category === 'Cinema') {
+        const locations = event.location.split('/').map(l => l.trim());
+        locations.forEach(loc => {
+          if (!uniqueCinemas.has(loc)) {
+            uniqueCinemas.add(loc);
+            all.push({
+              id: `cinema-group-${loc}`,
+              title: loc,
+              type: 'Cinema',
+              date: new Date(),
+              location: 'Recife',
+              image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=800',
+              link: `/cinema-programacao/${encodeURIComponent(loc)}`,
+              price: 1
+            });
+          }
+        });
+      } else {
+        let priceValue = 0
+        if (event.price && !['gratuito', 'entrada gratuita'].includes(event.price.toLowerCase())) {
+          priceValue = parseFloat(event.price.replace('R$', '').replace(',', '.')) || 1
         }
-      })
-    )
+        all.push({
+          id: `event-${event.id}`,
+          title: event.title,
+          type: event.category,
+          date: new Date(event.date),
+          location: event.location,
+          image: event.image,
+          link: `/evento/${event.id}`,
+          price: priceValue,
+        })
+      }
+    })
 
     teatroData.forEach(teatro =>
       teatro.shows.forEach(show => {
-        const first = show.sessions
-          .filter(s => new Date(`${s.date}T${s.time}`) >= today)
-          .sort((a, b) => new Date(a.date) - new Date(b.date))[0]
-        if (first) {
-          all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Teatro', date: new Date(`${first.date}T${first.time}`), location: teatro.name, image: show.poster, link: '/teatro', price: parseFloat(first.price.replace('R$', '')) || 1 })
-        }
+        all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Teatro', date: new Date(), location: teatro.name, image: show.poster, link: '/teatro', price: 1 })
       })
     )
 
@@ -89,36 +89,23 @@ export default function Home() {
         type: 'Feira', 
         date: new Date(), 
         location: feira.address, 
-        image: feira.image || 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?q=80&w=800', 
+        image: feira.image, 
         link: '/feiras', 
         price: 0,
         days: feira.days,
-        zone: feira.zone,
         feiraType: feira.type
       })
     )
 
-    return all.filter(e => {
-      const eventDate = new Date(e.date)
-      eventDate.setHours(0, 0, 0, 0)
-      return eventDate >= today
-    }).sort((a, b) => a.date - b.date)
+    return all.sort((a, b) => b.date - a.date)
   }, [eventsFromApi])
 
   const filtered = useMemo(() => {
     let result = allUpcoming
     if (category !== 'Todos') result = result.filter(e => e.type === category)
-    switch (price) {
-      case 'gratuito': result = result.filter(e => e.price === 0); break
-      case 'range1': result = result.filter(e => e.price > 0 && e.price <= 20); break
-      case 'range2': result = result.filter(e => e.price > 20 && e.price <= 50); break
-      case 'range3': result = result.filter(e => e.price > 50 && e.price <= 100); break
-      case 'range4': result = result.filter(e => e.price > 100); break
-    }
-    if (date) result = result.filter(e => e.date.toISOString().split('T')[0] === date)
     if (search.trim()) result = result.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
     return result
-  }, [allUpcoming, search, price, date, category])
+  }, [allUpcoming, search, category])
 
   const grouped = useMemo(() => {
     if (category !== 'Todos') return null
@@ -140,65 +127,61 @@ export default function Home() {
 
   function addToSchedule(feira) {
     const today = new Date().toISOString().split('T')[0]
-    const newItem = {
-      id: Date.now(),
-      time: '08:00', // Horário padrão para feiras
-      title: feira.title,
-      details: `Feira em ${feira.location}`,
-      type: 'event',
-    }
+    const newItem = { id: Date.now(), time: '08:00', title: feira.title, details: `Feira em ${feira.location}`, type: 'event' }
     const schedule = JSON.parse(localStorage.getItem('userSchedule')) || {}
     if (!schedule[today]) schedule[today] = []
     schedule[today].push(newItem)
     localStorage.setItem('userSchedule', JSON.stringify(schedule))
-    alert(`"${feira.title}" foi adicionada à sua programação de hoje!`)
-  }
-
-  function clearFilters() {
-    setSearch('')
-    setPrice('todos')
-    setDate('')
-    setCategory('Todos')
+    alert(`"${feira.title}" foi adicionada à sua programação!`)
   }
 
   return (
     <div>
       <Header />
       <main className="container">
-        <Carousel events={allUpcoming} />
+        <section className="welcome-section">
+          <div className="welcome-content">
+            <h1>Descubra o melhor do Recife com o Perambulando! 🗺️✨</h1>
+            <p>
+              Somos o seu guia cultural definitivo. Explore shows, exposições, feiras e o que há de novo nos cinemas e teatros da nossa cidade.
+            </p>
+            <div className="features-mini-grid">
+              <div className="feature-item">
+                <i className="fas fa-calendar-check"></i>
+                <span>Crie seu Roteiro</span>
+              </div>
+              <div className="feature-item">
+                <i className="fas fa-map-marked-alt"></i>
+                <span>Roteiros Prontos</span>
+              </div>
+              <div className="feature-item">
+                <i className="fas fa-ticket-alt"></i>
+                <span>Ingressos Diretos</span>
+              </div>
+            </div>
+          </div>
+          <div className="welcome-cta-box">
+            <h3>É produtor ou conhece um evento? 📢</h3>
+            <p>
+              O Perambulando cresce com a sua ajuda! Divulgue seu evento gratuitamente e ajude a fortalecer a cena cultural de Recife.
+            </p>
+            <Link to="/seu-evento" className="btn-submit welcome-btn">
+              <i className="fas fa-plus-circle"></i> Divulgue seu Evento
+            </Link>
+          </div>
+        </section>
+
+        <Carousel events={allUpcoming.filter(e => e.type !== 'Cinema')} />
+        
         <section className="search-filter-box">
           <h2>Encontre o rolê perfeito! 😉</h2>
           <form id="search-form" className="main-filters" onSubmit={e => e.preventDefault()}>
-            <input
-              type="text"
-              placeholder="Busque por nome..."
-              className="search-input"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-            <select className="filter-select" value={price} onChange={e => setPrice(e.target.value)}>
-              <option value="todos">Qualquer Preço</option>
-              <option value="gratuito">Gratuito</option>
-              <option value="range1">$ (até R$20)</option>
-              <option value="range2">$$ (R$21 a R$50)</option>
-              <option value="range3">$$$ (R$51 a R$100)</option>
-              <option value="range4">$$$$+ (Acima de R$100)</option>
-            </select>
-            <input
-              type="date"
-              className="filter-select"
-              value={date}
-              onChange={e => setDate(e.target.value)}
-            />
-            <button type="button" className="clear-btn" onClick={clearFilters}>Limpar</button>
+            <input type="text" placeholder="Busque por nome..." className="search-input" value={search} onChange={e => setSearch(e.target.value)} />
+            <button type="button" className="clear-btn" onClick={() => { setSearch(''); setCategory('Todos'); }}>Limpar</button>
           </form>
           <nav className="category-cards-nav">
             {CATEGORIES_WITH_ICONS.map(cat => (
-              <div
-                key={cat.name}
-                className={`category-card-btn ${category === cat.name ? 'active' : ''}`}
-                onClick={() => setCategory(cat.name)}
-              >
+              <div key={cat.name} className={`category-card-btn ${category === cat.name ? 'active' : ''}`} onClick={() => setCategory(cat.name)}>
                 <i className={cat.icon}></i>
                 <span>{cat.name}</span>
               </div>
@@ -208,7 +191,7 @@ export default function Home() {
 
         <section className="category-section">
           {filtered.length === 0 ? (
-            <p className="empty-state">Nenhum evento encontrado. Tente outros filtros! 🧐</p>
+            <p className="empty-state">Nenhum evento encontrado. 🧐</p>
           ) : (
             category === 'Todos' ? (
               Object.keys(grouped).map(catName => (
@@ -217,19 +200,12 @@ export default function Home() {
                     <h3 className="section-title">{catName}</h3>
                     {grouped[catName].length > 4 && (
                       <div className="scroll-controls">
-                        <button onClick={() => scroll(catName, 'left')} className="scroll-btn">
-                          <i className="fas fa-chevron-left"></i>
-                        </button>
-                        <button onClick={() => scroll(catName, 'right')} className="scroll-btn">
-                          <i className="fas fa-chevron-right"></i>
-                        </button>
+                        <button onClick={() => scroll(catName, 'left')} className="scroll-btn"><i className="fas fa-chevron-left"></i></button>
+                        <button onClick={() => scroll(catName, 'right')} className="scroll-btn"><i className="fas fa-chevron-right"></i></button>
                       </div>
                     )}
                   </div>
-                  <div 
-                    className={`events-grid small-cards ${grouped[catName].length > 4 ? 'horizontal-scroll' : ''}`}
-                    ref={el => scrollRefs.current[catName] = el}
-                  >
+                  <div className={`events-grid small-cards ${grouped[catName].length > 4 ? 'horizontal-scroll' : ''}`} ref={el => scrollRefs.current[catName] = el}>
                     {grouped[catName].map(event => (
                       event.type === 'Feira' ? (
                         <div className="feira-card" key={event.id}>
@@ -237,40 +213,13 @@ export default function Home() {
                           <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
                           <p><i className="far fa-calendar-alt"></i> {event.days}</p>
                           <span className="feira-tag">{event.feiraType}</span>
-                          <button 
-                            className="add-schedule-btn" 
-                            style={{ marginTop: '10px', width: '100%' }}
-                            onClick={() => addToSchedule(event)}
-                          >
-                            🗓️ Adicionar
-                          </button>
+                          <button className="action-icon-btn schedule-mini" style={{ marginTop: '10px', width: '100%' }} onClick={() => addToSchedule(event)}>🗓️ Adicionar</button>
                         </div>
-                      ) : (
-                        <EventCard key={event.id} event={event} isSmall={true} />
-                      )
+                      ) : <EventCard key={event.id} event={event} isSmall={true} />
                     ))}
                   </div>
                 </div>
               ))
-            ) : category === 'Feira' ? (
-              <div className="feiras-grid">
-                {filtered.map(feira => (
-                  <div className="feira-card" key={feira.id}>
-                    <h3>{feira.title}</h3>
-                    <p><i className="fas fa-map-marker-alt"></i> {feira.location}</p>
-                    <p><i className="far fa-calendar-alt"></i> {feira.days}</p>
-                    <p><i className="fas fa-compass"></i> Zona {feira.zone}</p>
-                    <span className="feira-tag">{feira.feiraType}</span>
-                    <button 
-                      className="add-schedule-btn" 
-                      style={{ marginTop: '15px', width: '100%' }}
-                      onClick={() => addToSchedule(feira)}
-                    >
-                      🗓️ Adicionar à Programação
-                    </button>
-                  </div>
-                ))}
-              </div>
             ) : (
               <div className="events-grid">
                 {filtered.map(event => <EventCard key={event.id} event={event} />)}

@@ -55,18 +55,32 @@ app.get('/api/admin/eventos/pendentes', async (req, res) => {
   }
 });
 
-// Alterar status de um evento (Aprovar/Rejeitar)
+// Alterar status e dados de um evento (Aprovar/Rejeitar/Editar)
 app.patch('/api/admin/eventos/:id/status', async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body; // APROVADO ou REJEITADO
+  const { status, ...eventData } = req.body; 
+  
   try {
+    if (status === 'REJEITADO') {
+      // Se for rejeitado, exclui permanentemente do banco
+      await prisma.evento.delete({
+        where: { id: parseInt(id) }
+      });
+      return res.json({ message: 'Evento excluído com sucesso' });
+    }
+
+    // Se for aprovado ou editado, atualiza normalmente
     const atualizado = await prisma.evento.update({
       where: { id: parseInt(id) },
-      data: { status }
+      data: { 
+        ...eventData,
+        status 
+      }
     });
     res.json(atualizado);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao atualizar status do evento' });
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao processar ação no evento' });
   }
 });
 
@@ -96,6 +110,21 @@ app.post('/api/login', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: 'Erro ao realizar login' });
+  }
+});
+
+const runScraper = require('./robot');
+
+// ... outros middlewares ...
+
+// Rota para disparar o Robô manualmente
+app.post('/api/admin/robot/run', async (req, res) => {
+  try {
+    // Roda em segundo plano para não travar a resposta
+    runScraper();
+    res.json({ message: 'Robô iniciado! Verifique o painel de moderação em alguns instantes.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Falha ao iniciar o robô' });
   }
 });
 

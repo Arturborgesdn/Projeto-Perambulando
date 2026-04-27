@@ -1,0 +1,221 @@
+/* Estilos específicos para a aba de Moderação */
+
+.wide-admin {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.moderation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.robot-btn {
+    width: auto !important;
+    padding: 12px 25px !important;
+    background: var(--dark) !important;
+    font-size: 0.9rem !important;
+}
+
+.robot-btn:hover {
+    background: #4B5280 !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+}
+
+.admin-table thead {
+    background: var(--dark);
+    color: var(--white);
+}
+
+.admin-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.table-thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+.table-cell-title {
+    font-weight: 700;
+    color: var(--dark);
+    max-width: 250px;
+}
+
+.table-cell-text {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    max-width: 200px;
+}
+
+.table-badge {
+    background: var(--bg);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 800;
+    border: 1px solid var(--primary-glow);
+}
+
+.table-links-status {
+    display: flex;
+    gap: 10px;
+    font-size: 1.1rem;
+    color: var(--muted);
+}
+
+.table-links-status i {
+    cursor: help;
+}
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+    position: relative;
+    z-index: 5;
+}
+
+.btn-action {
+    padding: 8px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    pointer-events: auto;
+}
+
+.btn-action.edit {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-action.edit:hover {
+    background: var(--accent-dark);
+}
+
+.btn-action.accept {
+    background: var(--success);
+    color: white;
+}
+
+.btn-action.accept:hover {
+    background: var(--success-dark);
+}
+
+.btn-action.reject {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-action.reject:hover {
+    background: #dc2626;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Modal de Edição na Moderação */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.close-modal-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background: none;
+    color: var(--muted);
+    font-size: 1.8rem;
+    border: none;
+    width: auto;
+    cursor: pointer;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.close-modal-btn:hover {
+    color: var(--primary);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 100px 20px;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* Ajustes no formulário dentro do modal */
+.form-container.wide {
+    max-width: 800px;
+    width: 95%;
+    padding: 30px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.modal-footer-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.modal-footer-actions .btn-submit {
+    flex: 1;
+}
