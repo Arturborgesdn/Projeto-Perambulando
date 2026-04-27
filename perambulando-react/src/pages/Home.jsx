@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import EventCard from '../components/EventCard'
@@ -22,11 +22,12 @@ export default function Home() {
   const [price, setPrice] = useState('todos')
   const [date, setDate] = useState('')
   const [category, setCategory] = useState('Todos')
+  const scrollRefs = useRef({})
 
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch('http://localhost:3001/api/eventos')
+        const response = await fetch('http://127.0.0.1:3001/api/eventos')
         const data = await response.json()
         setEventsFromApi(data)
       } catch (error) {
@@ -41,7 +42,6 @@ export default function Home() {
     today.setHours(0, 0, 0, 0)
     const all = []
 
-    // Dados da API
     eventsFromApi.forEach(event => {
       let priceValue = 0
       if (event.price && !['gratuito', 'entrada gratuita'].includes(event.price.toLowerCase())) {
@@ -59,7 +59,6 @@ export default function Home() {
       })
     })
 
-    // Dados estáticos
     cinemaData.forEach(cinema =>
       cinema.movies.forEach(movie => {
         const first = movie.sessions
@@ -84,7 +83,19 @@ export default function Home() {
     )
 
     feirasData.forEach(feira =>
-      all.push({ id: `feira-${feira.id}`, title: feira.name, type: 'Feira', date: new Date(), location: feira.address, image: 'https://i.imgur.com/c5Bv6g5.jpg', link: '/feiras', price: 0 })
+      all.push({ 
+        id: `feira-${feira.id}`, 
+        title: feira.name, 
+        type: 'Feira', 
+        date: new Date(), 
+        location: feira.address, 
+        image: feira.image || 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?q=80&w=800', 
+        link: '/feiras', 
+        price: 0,
+        days: feira.days,
+        zone: feira.zone,
+        feiraType: feira.type
+      })
     )
 
     return all.filter(e => e.date >= today).sort((a, b) => a.date - b.date)
@@ -92,9 +103,7 @@ export default function Home() {
 
   const filtered = useMemo(() => {
     let result = allUpcoming
-
     if (category !== 'Todos') result = result.filter(e => e.type === category)
-
     switch (price) {
       case 'gratuito': result = result.filter(e => e.price === 0); break
       case 'range1': result = result.filter(e => e.price > 0 && e.price <= 20); break
@@ -102,17 +111,13 @@ export default function Home() {
       case 'range3': result = result.filter(e => e.price > 50 && e.price <= 100); break
       case 'range4': result = result.filter(e => e.price > 100); break
     }
-
     if (date) result = result.filter(e => e.date.toISOString().split('T')[0] === date)
-
     if (search.trim()) result = result.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
-
     return result
   }, [allUpcoming, search, price, date, category])
 
   const grouped = useMemo(() => {
     if (category !== 'Todos') return null
-    
     const groups = {}
     filtered.forEach(event => {
       if (!groups[event.type]) groups[event.type] = []
@@ -120,6 +125,30 @@ export default function Home() {
     })
     return groups
   }, [filtered, category])
+
+  const scroll = (catName, direction) => {
+    const container = scrollRefs.current[catName]
+    if (container) {
+      const scrollAmount = direction === 'left' ? -300 : 300
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
+    }
+  }
+
+  function addToSchedule(feira) {
+    const today = new Date().toISOString().split('T')[0]
+    const newItem = {
+      id: Date.now(),
+      time: '08:00', // Horário padrão para feiras
+      title: feira.title,
+      details: `Feira em ${feira.location}`,
+      type: 'event',
+    }
+    const schedule = JSON.parse(localStorage.getItem('userSchedule')) || {}
+    if (!schedule[today]) schedule[today] = []
+    schedule[today].push(newItem)
+    localStorage.setItem('userSchedule', JSON.stringify(schedule))
+    alert(`"${feira.title}" foi adicionada à sua programação de hoje!`)
+  }
 
   function clearFilters() {
     setSearch('')
@@ -132,10 +161,9 @@ export default function Home() {
     <div>
       <Header />
       <main className="container">
-        <Carousel />
+        <Carousel events={allUpcoming} />
         <section className="search-filter-box">
           <h2>Encontre o rolê perfeito! 😉</h2>
-
           <form id="search-form" className="main-filters" onSubmit={e => e.preventDefault()}>
             <input
               type="text"
@@ -160,7 +188,6 @@ export default function Home() {
             />
             <button type="button" className="clear-btn" onClick={clearFilters}>Limpar</button>
           </form>
-
           <nav className="category-cards-nav">
             {CATEGORIES_WITH_ICONS.map(cat => (
               <div
@@ -182,14 +209,64 @@ export default function Home() {
             category === 'Todos' ? (
               Object.keys(grouped).map(catName => (
                 <div key={catName} className="grouped-category-section">
-                  <h3 className="section-title">{catName}</h3>
-                  <div className="events-grid small-cards">
+                  <div className="section-header">
+                    <h3 className="section-title">{catName}</h3>
+                    {grouped[catName].length > 4 && (
+                      <div className="scroll-controls">
+                        <button onClick={() => scroll(catName, 'left')} className="scroll-btn">
+                          <i className="fas fa-chevron-left"></i>
+                        </button>
+                        <button onClick={() => scroll(catName, 'right')} className="scroll-btn">
+                          <i className="fas fa-chevron-right"></i>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div 
+                    className={`events-grid small-cards ${grouped[catName].length > 4 ? 'horizontal-scroll' : ''}`}
+                    ref={el => scrollRefs.current[catName] = el}
+                  >
                     {grouped[catName].map(event => (
-                      <EventCard key={event.id} event={event} isSmall={true} />
+                      event.type === 'Feira' ? (
+                        <div className="feira-card" key={event.id}>
+                          <h3>{event.title}</h3>
+                          <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
+                          <p><i className="far fa-calendar-alt"></i> {event.days}</p>
+                          <span className="feira-tag">{event.feiraType}</span>
+                          <button 
+                            className="add-schedule-btn" 
+                            style={{ marginTop: '10px', width: '100%' }}
+                            onClick={() => addToSchedule(event)}
+                          >
+                            🗓️ Adicionar
+                          </button>
+                        </div>
+                      ) : (
+                        <EventCard key={event.id} event={event} isSmall={true} />
+                      )
                     ))}
                   </div>
                 </div>
               ))
+            ) : category === 'Feira' ? (
+              <div className="feiras-grid">
+                {filtered.map(feira => (
+                  <div className="feira-card" key={feira.id}>
+                    <h3>{feira.title}</h3>
+                    <p><i className="fas fa-map-marker-alt"></i> {feira.location}</p>
+                    <p><i className="far fa-calendar-alt"></i> {feira.days}</p>
+                    <p><i className="fas fa-compass"></i> Zona {feira.zone}</p>
+                    <span className="feira-tag">{feira.feiraType}</span>
+                    <button 
+                      className="add-schedule-btn" 
+                      style={{ marginTop: '15px', width: '100%' }}
+                      onClick={() => addToSchedule(feira)}
+                    >
+                      🗓️ Adicionar à Programação
+                    </button>
+                  </div>
+                ))}
+              </div>
             ) : (
               <div className="events-grid">
                 {filtered.map(event => <EventCard key={event.id} event={event} />)}

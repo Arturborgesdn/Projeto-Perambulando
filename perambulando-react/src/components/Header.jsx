@@ -35,21 +35,9 @@ export default function Header() {
 
       <nav className={`side-menu ${menuOpen ? 'open' : ''}`} style={menuOpen ? { transform: 'translateX(0)' } : {}}>
         <Link to="/" onClick={closeMenu}>Início</Link>
-        <Link to="/seu-evento" onClick={closeMenu} style={{ color: 'var(--primary-color)' }}>
-          ➕ Divulgue seu Evento
-        </Link>
-        <Link to="/cinema" onClick={closeMenu}>Cinema</Link>
-        <Link to="/teatro" onClick={closeMenu}>Teatro</Link>
-        <Link to="/restaurantes" onClick={closeMenu}>Restaurantes</Link>
-        <Link to="/feiras" onClick={closeMenu}>Feiras</Link>
-        <Link to="/shows" onClick={closeMenu}>Shows</Link>
-        <Link to="/exposicoes" onClick={closeMenu}>Exposições</Link>
-        <Link to="/lazer" onClick={closeMenu}>Programas de Lazer</Link>
-        <Link to="/infantil" onClick={closeMenu}>Programas Infantis</Link>
+        <Link to="/seu-evento" onClick={closeMenu}>Divulgue seu Evento</Link>
         <Link to="/roteiros" onClick={closeMenu}>Roteiros Prontos</Link>
-        <Link to="/eventos-do-dia" onClick={closeMenu} style={{ color: 'red' }}>
-          🔥 Eventos do Dia
-        </Link>
+        <Link to="/eventos-do-dia" onClick={closeMenu}>Eventos do Dia</Link>
         <Link to="/painel" onClick={closeMenu}>Minha Programação</Link>
         <Link to="/login" onClick={closeMenu}>Login / Cadastro</Link>
       </nav>

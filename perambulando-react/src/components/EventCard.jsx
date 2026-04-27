@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom'
 
 export default function EventCard({ event, isSmall }) {
-  const formattedDate = event.date.toLocaleDateString('pt-BR', {
+  const dateObj = event.date instanceof Date ? event.date : new Date(event.date);
+  const formattedDate = dateObj.toLocaleDateString('pt-BR', {
     day: '2-digit', month: 'long', year: 'numeric'
   })
-  const formattedTime = event.date.toLocaleTimeString('pt-BR', {
+  const formattedTime = dateObj.toLocaleTimeString('pt-BR', {
     hour: '2-digit', minute: '2-digit'
   })
 
-  function addToSchedule() {
-    const dateKey = event.date.toISOString().split('T')[0]
+  function addToSchedule(e) {
+    e.preventDefault();
+    const dateKey = dateObj.toISOString().split('T')[0]
     const newItem = {
       id: Date.now(),
       time: formattedTime,
@@ -31,14 +33,27 @@ export default function EventCard({ event, isSmall }) {
         <div className="event-info">
           <span className="category">{event.type}</span>
           <h3>{event.title}</h3>
-          <p><i className="far fa-calendar-alt"></i> {formattedDate} às {formattedTime}</p>
-          {!isSmall && <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>}
+          <p><i className="far fa-calendar-alt"></i> {formattedDate}</p>
+          <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
         </div>
       </Link>
-      <div className="event-actions">
-        <button className="add-schedule-btn" onClick={addToSchedule}>
-          {isSmall ? '🗓️' : '🗓️ Adicionar à Programação'}
+      
+      <div className="event-actions-bar">
+        <button className="action-icon-btn schedule-mini" onClick={addToSchedule} title="Adicionar à Programação">
+          <i className="far fa-calendar-plus"></i>
         </button>
+        
+        {event.ticketLink && (
+          <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" className="action-icon-btn ticket">
+            <i className="fas fa-ticket-alt"></i> Ingressos
+          </a>
+        )}
+        
+        {event.instagramLink && (
+          <a href={event.instagramLink} target="_blank" rel="noopener noreferrer" className="action-icon-btn instagram">
+            <i className="fab fa-instagram"></i>
+          </a>
+        )}
       </div>
     </div>
   )

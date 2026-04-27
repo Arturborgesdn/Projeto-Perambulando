@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import html2canvas from 'html2canvas'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 
@@ -9,6 +10,7 @@ function getTodayString() {
 
 export default function Painel() {
   const navigate = useNavigate()
+  const trilhaRef = useRef(null)
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
 
   const [selectedDate, setSelectedDate] = useState(getTodayString())
@@ -21,6 +23,44 @@ export default function Painel() {
       navigate('/login')
     }
   }, [])
+
+  async function exportAsImage() {
+    if (!trilhaRef.current) return;
+    
+    // Pequeno feedback visual antes de capturar
+    const btn = document.querySelector('.export-btn');
+    btn.innerText = 'Gerando imagem...';
+
+    try {
+      const canvas = await html2canvas(trilhaRef.current, {
+        backgroundColor: '#F7FFF7',
+        scale: 2, // Melhor qualidade
+        logging: false,
+        useCORS: true
+      });
+
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `meu-roteiro-${selectedDate}.png`;
+      link.click();
+      
+      // Simulação de compartilhamento via Web Share API se disponível
+      if (navigator.share) {
+        const blob = await (await fetch(image)).blob();
+        const file = new File([blob], 'roteiro.png', { type: 'image/png' });
+        navigator.share({
+          title: 'Meu Roteiro no Perambulando',
+          text: `Confira minha programação para o dia ${selectedDate}! Veja mais no site: ${window.location.origin}`,
+          files: [file]
+        }).catch(() => {});
+      }
+    } catch (err) {
+      console.error('Erro ao exportar:', err);
+    } finally {
+      btn.innerHTML = '<i class="fas fa-camera"></i> Exportar Roteiro';
+    }
+  }
 
   function getItemsForDay(dateStr) {
     return (schedule[dateStr] || []).slice().sort((a, b) => a.time.localeCompare(b.time))
@@ -66,7 +106,10 @@ export default function Painel() {
       <Header />
       <main className="container">
         <div className="panel-header">
-          <h2>Bem-vindo(a), {currentUser.email}! 👋</h2>
+          <h2>Bem-vindo(a), {currentUser.nome || 'Viajante'}! 👋</h2>
+          <p style={{ color: 'var(--secondary-color)', marginBottom: 20 }}>
+            <i className="fas fa-envelope"></i> {currentUser.email}
+          </p>
           <p>Organize seu dia e não perca nenhum evento!</p>
         </div>
 
@@ -102,7 +145,11 @@ export default function Painel() {
             </div>
           </div>
 
-          <div className="agenda-list-container">
+          <div className="agenda-list-container" ref={trilhaRef}>
+            <div className="trilha-branding">
+              <img src="/logo.png" alt="Logo" style={{ height: 30 }} />
+              <span>perambulando.com.br</span>
+            </div>
             <h3>Programação para {displayDate}</h3>
             <ul style={{ padding: 0 }}>
               {items.length === 0 ? (
@@ -122,13 +169,22 @@ export default function Painel() {
                       onClick={() => deleteItem(item.id)}
                       title="Remover item"
                     >
-                      &times;
+                      <i className="fas fa-trash-can"></i>
                     </button>
                   </li>
                 ))
               )}
             </ul>
+            <div className="trilha-footer-link">
+              Confira no site: <strong>{window.location.origin}</strong>
+            </div>
           </div>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: 30 }}>
+          <button onClick={exportAsImage} className="export-btn">
+            <i className="fas fa-camera"></i> Exportar Roteiro
+          </button>
         </div>
       </main>
       <Footer />

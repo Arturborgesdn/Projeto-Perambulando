@@ -1,11 +1,54 @@
 import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { mockEventsData } from '../data/data'
+import { feirasData } from '../data/data'
 
 export default function Evento() {
   const { id } = useParams()
-  const event = mockEventsData.find(e => String(e.id) === id)
+  const [event, setEvent] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchEvent() {
+      // Tenta buscar no banco de dados primeiro (Eventos)
+      if (id.startsWith('event-') || !isNaN(id)) {
+        const cleanId = id.replace('event-', '')
+        try {
+          const response = await fetch(`http://127.0.0.1:3001/api/eventos`)
+          const data = await response.json()
+          const found = data.find(e => String(e.id) === cleanId)
+          if (found) {
+            setEvent({ ...found, type: 'event' })
+            setLoading(false)
+            return
+          }
+        } catch (error) {
+          console.error('Erro ao buscar evento na API:', error)
+        }
+      }
+
+      // Se não encontrou, tenta buscar nas feiras (Mock Data)
+      const cleanId = id.replace('feira-', '')
+      const feira = feirasData.find(f => String(feira.id) === cleanId)
+      if (feira) {
+        setEvent({
+          title: feira.name,
+          category: 'Feira',
+          date: new Date(),
+          location: feira.address,
+          description: `Feira de ${feira.type} na zona ${feira.zone}. Funcionamento: ${feira.days}`,
+          image: feira.image || 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?q=80&w=800',
+          price: 'Gratuito',
+          type: 'feira'
+        })
+      }
+      setLoading(false)
+    }
+    fetchEvent()
+  }, [id])
+
+  if (loading) return <div className="container" style={{ padding: '100px', textAlign: 'center' }}>Carregando detalhes...</div>
 
   if (!event) {
     return (
@@ -47,7 +90,7 @@ export default function Evento() {
           <div className="event-hero">
             <img src={event.image} alt={event.title} className="event-hero-img" />
             <div className="event-hero-overlay">
-              <span className="category" style={{ backgroundColor: 'var(--primary-color)' }}>{event.category}</span>
+              <span className="category" style={{ backgroundColor: 'var(--primary-color)' }}>{event.category || 'Evento'}</span>
               <h1 style={{ fontSize: '2.5rem', marginTop: '15px' }}>{event.title}</h1>
             </div>
           </div>
@@ -55,7 +98,7 @@ export default function Evento() {
           <div className="event-detail-info-container">
             <div className="event-description">
               <h2>Sobre o Evento</h2>
-              <p>{event.description}</p>
+              <p>{event.description || 'Nenhuma descrição detalhada disponível.'}</p>
             </div>
 
             <div className="event-sidebar">
@@ -64,28 +107,24 @@ export default function Evento() {
                   <i className="far fa-calendar-alt"></i>
                   <span>{formattedDate}</span>
                 </div>
-                <div className="event-meta-item">
-                  <i className="far fa-clock"></i>
-                  <span>{formattedTime}</span>
-                </div>
+                {event.type !== 'feira' && (
+                  <div className="event-meta-item">
+                    <i className="far fa-clock"></i>
+                    <span>{formattedTime}</span>
+                  </div>
+                )}
                 <div className="event-meta-item">
                   <i className="fas fa-map-marker-alt"></i>
                   <span>{event.location}</span>
                 </div>
                 <div className="event-meta-item">
                   <i className="fas fa-tag"></i>
-                  <span>{event.price}</span>
+                  <span>{event.price || 'Gratuito'}</span>
                 </div>
-                {event.genre && (
-                  <div className="event-meta-item">
-                    <i className="fas fa-music"></i>
-                    <span>{event.genre}</span>
-                  </div>
-                )}
               </div>
 
               <div className="event-detail-actions">
-                <button className="btn-submit" onClick={addToSchedule}>
+                <button className="btn-submit" onClick={addToSchedule} style={{ backgroundColor: 'var(--primary-color)' }}>
                   🗓️ Adicionar à Programação
                 </button>
                 {event.ticketLink && (

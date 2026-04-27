@@ -51,6 +51,7 @@ app.get('/api/clientes', async (req, res) => {
 // Cadastro de Cliente
 app.post('/api/clientes', async (req, res) => {
   const { nome, email, senha } = req.body;
+  console.log(`Tentativa de cadastro: ${nome} (${email})`);
   try {
     const novoCliente = await prisma.cliente.create({
       data: { nome, email, senha },
@@ -61,6 +62,24 @@ app.post('/api/clientes', async (req, res) => {
       return res.status(400).json({ error: 'Email já cadastrado' });
     }
     res.status(500).json({ error: 'Erro ao cadastrar cliente' });
+  }
+});
+
+// Rota de Login
+app.post('/api/login', async (req, res) => {
+  const { email, senha } = req.body;
+  try {
+    const user = await prisma.cliente.findUnique({
+      where: { email },
+    });
+
+    if (user && user.senha === senha) {
+      res.json({ id: user.id, nome: user.nome, email: user.email });
+    } else {
+      res.status(401).json({ error: 'E-mail ou senha incorretos' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao realizar login' });
   }
 });
 

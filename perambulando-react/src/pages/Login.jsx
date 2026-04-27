@@ -9,16 +9,36 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    const users = JSON.parse(localStorage.getItem('users') || '[]')
-    const user = users.find(u => u.email === email && u.password === password)
+    setError('')
 
-    if (user) {
-      localStorage.setItem('currentUser', JSON.stringify({ email: user.email }))
-      navigate('/painel')
-    } else {
-      setError('E-mail ou senha incorretos. Verifique seus dados ou cadastre-se.')
+    try {
+      const response = await fetch('http://127.0.0.1:3001/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          senha: password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao realizar login')
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify({ 
+        id: data.id, 
+        nome: data.nome, 
+        email: data.email 
+      }))
+      navigate('/')
+    } catch (err) {
+      setError(err.message)
     }
   }
 
