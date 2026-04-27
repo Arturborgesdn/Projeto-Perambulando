@@ -14,7 +14,9 @@ export default function SeuEvento() {
     location: '',
     description: '',
     price: '',
-    image: '', // Usaremos link de imagem direto para simplificar o MVP
+    image: '',
+    instagramLink: '',
+    ticketLink: ''
   })
 
   useEffect(() => {
@@ -139,6 +141,28 @@ export default function SeuEvento() {
                   value={formData.image}
                   onChange={handleInputChange}
                   required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>URL Instagram (Opcional)</label>
+                <input
+                  type="url"
+                  name="instagramLink"
+                  placeholder="https://instagram.com/seu-evento"
+                  value={formData.instagramLink}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>URL Site de Compra (Opcional)</label>
+                <input
+                  type="url"
+                  name="ticketLink"
+                  placeholder="https://sympla.com.br/seu-evento"
+                  value={formData.ticketLink}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>

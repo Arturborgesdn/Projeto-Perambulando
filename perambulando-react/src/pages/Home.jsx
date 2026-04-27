@@ -98,7 +98,11 @@ export default function Home() {
       })
     )
 
-    return all.filter(e => e.date >= today).sort((a, b) => a.date - b.date)
+    return all.filter(e => {
+      const eventDate = new Date(e.date)
+      eventDate.setHours(0, 0, 0, 0)
+      return eventDate >= today
+    }).sort((a, b) => a.date - b.date)
   }, [eventsFromApi])
 
   const filtered = useMemo(() => {
