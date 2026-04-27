@@ -14,15 +14,6 @@ export const cinemaData = [
       { title: 'Divertida Mente 2', genre: 'Animação, Família', rating: 'Livre', poster: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=800', synopsis: 'Novas emoções chegam à mente de Riley.', sessions: [{ date: '2026-09-05', time: '14:00', type: 'Dublado - 3D' }, { date: '2026-09-07', time: '16:15', type: 'Dublado' }] },
     ],
   },
-  {
-    name: 'UCI Kinoplex Tacaruna',
-    location: 'Shopping Tacaruna, Santo Amaro',
-    ticketLink: 'https://www.ucicinemas.com.br/cinemas/uci-kinoplex-tacaruna-12',
-    instagramLink: 'https://www.instagram.com/ucicinemas',
-    movies: [
-      { title: 'O Auto da Compadecida 2', genre: 'Comédia, Nacional', rating: '12 anos', poster: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=800', synopsis: 'A amizade de João Grilo e Chicó é posta à prova.', sessions: [{ date: '2026-09-08', time: '15:00', type: 'Nacional' }, { date: '2026-09-09', time: '17:30', type: 'Nacional' }] },
-    ],
-  },
 ]
 
 // =======================================================
@@ -45,7 +36,6 @@ export const teatroData = [
 // =======================================================
 export const foodData = [
   { id: 1, name: 'Leite', category: 'Restaurante', cuisine: 'Regional Sofisticado', location: 'Praça Joaquim Nabuco, Santo Antônio', priceRange: '$$$$', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800', specialty: 'O restaurante mais antigo do Brasil.' },
-  { id: 2, name: 'Parraxaxá', category: 'Restaurante', cuisine: 'Comida Regional', location: 'Casa Forte', priceRange: '$$$', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800', specialty: 'Buffet de comida nordestina.' },
 ]
 
 // =======================================================
@@ -61,14 +51,44 @@ export const feirasData = [
 export const roteirosData = [
   {
     id: 1,
-    title: 'Recife Antigo',
-    duration: '1 dia',
+    title: 'Clássico Recife Antigo',
+    duration: '6 horas',
     category: 'Cultura',
     image: 'https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?q=80&w=800',
-    description: 'Explore o coração histórico do Recife.',
-    stops: ['Marco Zero', 'Rua do Bom Jesus'],
+    description: 'O roteiro essencial para quem quer conhecer o coração histórico da cidade.',
+    stops: [
+      { time: '09:00', place: 'Marco Zero', details: 'Início com vista para o mar' },
+      { time: '10:30', place: 'Paço do Frevo', details: 'Imersão na dança pernambucana' },
+      { time: '12:30', place: 'Almoço na Rua da Moeda', details: 'Gastronomia local' },
+      { time: '14:30', place: 'Sinagoga Kahal Zur Israel', details: 'História e herança cultural' }
+    ],
   },
+  {
+    id: 2,
+    title: 'Expresso Olinda & Arte',
+    duration: '5 horas',
+    category: 'Arte e Vista',
+    image: 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?q=80&w=800',
+    description: 'Suba as ladeiras e descubra os ateliês mais charmosos da cidade alta.',
+    stops: [
+      { time: '15:00', place: 'Alto da Sé', details: 'Tapioca e vista panorâmica' },
+      { time: '16:30', place: 'Mercado da Ribeira', details: 'Artesanato e lembranças' },
+      { time: '18:00', place: 'Pôr do Sol no Bonfim', details: 'Momento contemplativo' }
+    ],
+  },
+  {
+    id: 3,
+    title: 'Rota dos Sabores Pernambucanos',
+    duration: '4 horas',
+    category: 'Gastronomia',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800',
+    description: 'Uma jornada culinária pelos pratos mais icônicos da nossa terra.',
+    stops: [
+      { time: '11:00', place: 'Mercado de São José', details: 'Ingredientes e cores' },
+      { time: '13:00', place: 'Restaurante Parraxaxá', details: 'Buffet regional completo' },
+      { time: '15:00', place: 'Casa dos Frios', details: 'Degustação do Bolo de Rolo original' }
+    ],
+  }
 ]
 
-// Exportar mockEventsData para manter compatibilidade se necessário em algum lugar
 export const mockEventsData = []; 

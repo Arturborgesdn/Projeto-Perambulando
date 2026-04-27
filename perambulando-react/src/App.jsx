@@ -15,6 +15,7 @@ import Login from './pages/Login'
 import Cadastro from './pages/Cadastro'
 import Evento from './pages/Evento'
 import SeuEvento from './pages/SeuEvento'
+import Moderacao from './pages/Moderacao'
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/evento/:id" element={<Evento />} />
         <Route path="/seu-evento" element={<SeuEvento />} />
+        <Route path="/moderacao" element={<Moderacao />} />
       </Routes>
     </BrowserRouter>
   )

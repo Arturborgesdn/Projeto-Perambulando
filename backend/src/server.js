@@ -10,23 +10,29 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// --- ROTAS DE EVENTOS ---
+// --- ROTAS DE EVENTOS (PÚBLICAS) ---
 
-// Listar todos os eventos
+// Listar eventos aprovados (Home)
 app.get('/api/eventos', async (req, res) => {
   try {
-    const eventos = await prisma.evento.findMany();
+    const eventos = await prisma.evento.findMany({
+      where: { status: 'APROVADO' },
+      orderBy: { date: 'asc' }
+    });
     res.json(eventos);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao buscar eventos' });
   }
 });
 
-// Criar novo evento
+// Criar novo evento (Vem como PENDENTE por padrão)
 app.post('/api/eventos', async (req, res) => {
   try {
     const novoEvento = await prisma.evento.create({
-      data: req.body,
+      data: {
+        ...req.body,
+        status: 'PENDENTE' // Garante que comece pendente
+      },
     });
     res.status(201).json(novoEvento);
   } catch (error) {
@@ -34,45 +40,55 @@ app.post('/api/eventos', async (req, res) => {
   }
 });
 
-// --- ROTAS DE CLIENTES ---
+// --- ROTAS DE ADMINISTRAÇÃO (MODERAÇÃO) ---
 
-// Listar clientes (apenas para teste)
-app.get('/api/clientes', async (req, res) => {
+// Listar eventos pendentes
+app.get('/api/admin/eventos/pendentes', async (req, res) => {
   try {
-    const clientes = await prisma.cliente.findMany({
-      select: { id: true, nome: true, email: true, createdAt: true }
+    const pendentes = await prisma.evento.findMany({
+      where: { status: 'PENDENTE' },
+      orderBy: { createdAt: 'desc' }
     });
-    res.json(clientes);
+    res.json(pendentes);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar clientes' });
+    res.status(500).json({ error: 'Erro ao buscar pendentes' });
   }
 });
 
-// Cadastro de Cliente
+// Alterar status de um evento (Aprovar/Rejeitar)
+app.patch('/api/admin/eventos/:id/status', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body; // APROVADO ou REJEITADO
+  try {
+    const atualizado = await prisma.evento.update({
+      where: { id: parseInt(id) },
+      data: { status }
+    });
+    res.json(atualizado);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar status do evento' });
+  }
+});
+
+// --- ROTAS DE CLIENTES ---
+
 app.post('/api/clientes', async (req, res) => {
   const { nome, email, senha } = req.body;
-  console.log(`Tentativa de cadastro: ${nome} (${email})`);
   try {
     const novoCliente = await prisma.cliente.create({
       data: { nome, email, senha },
     });
     res.status(201).json({ id: novoCliente.id, nome: novoCliente.nome, email: novoCliente.email });
   } catch (error) {
-    if (error.code === 'P2002') {
-      return res.status(400).json({ error: 'Email já cadastrado' });
-    }
+    if (error.code === 'P2002') return res.status(400).json({ error: 'Email já cadastrado' });
     res.status(500).json({ error: 'Erro ao cadastrar cliente' });
   }
 });
 
-// Rota de Login
 app.post('/api/login', async (req, res) => {
   const { email, senha } = req.body;
   try {
-    const user = await prisma.cliente.findUnique({
-      where: { email },
-    });
-
+    const user = await prisma.cliente.findUnique({ where: { email } });
     if (user && user.senha === senha) {
       res.json({ id: user.id, nome: user.nome, email: user.email });
     } else {

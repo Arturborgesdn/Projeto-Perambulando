@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -30,5 +29,6 @@ model Evento {
   description   String?
   ticketLink    String?
   instagramLink String?
+  status        String   @default("PENDENTE") // PENDENTE, APROVADO, REJEITADO
   createdAt     DateTime @default(now())
 }

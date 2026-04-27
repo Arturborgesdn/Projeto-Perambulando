@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 export default function SeuEvento() {
   const navigate = useNavigate()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     category: 'Shows',
@@ -13,8 +14,7 @@ export default function SeuEvento() {
     location: '',
     description: '',
     price: '',
-    banner: null,
-    photos: []
+    image: '', // Usaremos link de imagem direto para simplificar o MVP
   })
 
   useEffect(() => {
@@ -32,21 +32,29 @@ export default function SeuEvento() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target
-    if (name === 'banner') {
-      setFormData(prev => ({ ...prev, banner: files[0] }))
-    } else {
-      setFormData(prev => ({ ...prev, photos: [...files] }))
-    }
-  }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Aqui você faria o upload dos dados para um servidor
-    console.log('Evento cadastrado:', formData)
-    alert('Evento enviado para análise! 🎉')
-    navigate('/')
+    setLoading(true)
+
+    try {
+      const response = await fetch('http://127.0.0.1:3001/api/eventos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          date: new Date(formData.date).toISOString(),
+        }),
+      })
+
+      if (!response.ok) throw new Error('Erro ao enviar evento')
+
+      alert('Evento enviado com sucesso! Ele aparecerá no site após a aprovação da nossa equipe. 🎉')
+      navigate('/')
+    } catch (error) {
+      alert('Houve um erro ao enviar seu evento. Tente novamente.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (!isLoggedIn) return null
@@ -61,7 +69,7 @@ export default function SeuEvento() {
             Preencha os dados abaixo para que seu evento apareça no Perambulando.
           </p>
 
-          <form onSubmit={handleSubmit} className="event-form">
+          <form onSubmit={handleSubmit}>
             <div className="form-grid">
               <div className="form-group">
                 <label>Nome do Evento</label>
@@ -121,6 +129,18 @@ export default function SeuEvento() {
                   onChange={handleInputChange}
                 />
               </div>
+
+              <div className="form-group">
+                <label>Link da Imagem (URL)</label>
+                <input
+                  type="url"
+                  name="image"
+                  placeholder="Cole o link de uma imagem da internet"
+                  value={formData.image}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
             </div>
 
             <div className="form-group">
@@ -136,25 +156,9 @@ export default function SeuEvento() {
               ></textarea>
             </div>
 
-            <div className="file-upload-section">
-              <div className="form-group">
-                <label>Banner Principal (Capa)</label>
-                <div className="file-input-wrapper">
-                  <input type="file" name="banner" accept="image/*" onChange={handleFileChange} required />
-                  <p className="file-hint">Formatos: JPG, PNG. Recomendado: 1200x400px</p>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Fotos da Galeria</label>
-                <div className="file-input-wrapper">
-                  <input type="file" name="photos" accept="image/*" multiple onChange={handleFileChange} />
-                  <p className="file-hint">Você pode selecionar várias fotos.</p>
-                </div>
-              </div>
-            </div>
-
-            <button type="submit" className="btn-submit">Publicar Evento</button>
+            <button type="submit" className="btn-submit" disabled={loading}>
+              {loading ? 'Enviando...' : 'Publicar Evento'}
+            </button>
           </form>
         </div>
       </main>
