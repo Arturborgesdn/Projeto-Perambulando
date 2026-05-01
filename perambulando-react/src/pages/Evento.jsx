@@ -90,7 +90,7 @@ export default function Evento() {
           <div className="event-hero">
             <img src={event.image} alt={event.title} className="event-hero-img" />
             <div className="event-hero-overlay">
-              <span className="category" style={{ backgroundColor: 'var(--primary-color)' }}>{event.category || 'Evento'}</span>
+              <span className="category">{event.category || 'Evento'}</span>
               <h1 style={{ fontSize: '2.5rem', marginTop: '15px' }}>{event.title}</h1>
             </div>
           </div>
@@ -124,8 +124,8 @@ export default function Evento() {
               </div>
 
               <div className="event-detail-actions">
-                <button className="btn-submit" onClick={addToSchedule} style={{ backgroundColor: 'var(--primary-color)' }}>
-                  🗓️ Adicionar à Programação
+                <button className="btn-submit btn-add-schedule" onClick={addToSchedule}>
+                  <i className="far fa-calendar-plus"></i> Adicionar à Programação
                 </button>
                 {event.ticketLink && (
                   <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" className="btn-ticket">

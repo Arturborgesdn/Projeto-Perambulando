@@ -8,13 +8,11 @@ import { cinemaData, teatroData, feirasData } from '../data/data'
 
 const CATEGORIES_WITH_ICONS = [
   { name: 'Todos', icon: 'fas fa-th-large' },
-  { name: 'Shows', icon: 'fas fa-music' },
-  { name: 'Cinema', icon: 'fas fa-film' },
-  { name: 'Teatro', icon: 'fas fa-masks-theater' },
-  { name: 'Exposições', icon: 'fas fa-palette' },
-  { name: 'Feira', icon: 'fas fa-store' },
-  { name: 'Lazer', icon: 'fas fa-umbrella-beach' },
-  { name: 'Infantil', icon: 'fas fa-child' },
+  { name: 'Palcos', icon: 'fas fa-masks-theater' }, // Teatro + Shows
+  { name: 'Telas', icon: 'fas fa-film' },           // Cinema
+  { name: 'Artes', icon: 'fas fa-palette' },        // Exposições
+  { name: 'Rua', icon: 'fas fa-map-signs' },        // Feiras + Lazer
+  { name: 'Infantil', icon: 'fas fa-child' },       // Infantil
 ]
 
 export default function Home() {
@@ -41,7 +39,17 @@ export default function Home() {
     const uniqueCinemas = new Set();
 
     eventsFromApi.forEach(event => {
-      if (event.category === 'Cinema') {
+      const originalCat = event.category || ''
+      let consolidatedType = originalCat
+
+      // Mapeamento para novas categorias
+      if (originalCat === 'Cinema') consolidatedType = 'Telas'
+      else if (['Teatro', 'Shows'].includes(originalCat)) consolidatedType = 'Palcos'
+      else if (originalCat === 'Exposições') consolidatedType = 'Artes'
+      else if (['Feira', 'Lazer'].includes(originalCat)) consolidatedType = 'Rua'
+      else if (originalCat === 'Infantil') consolidatedType = 'Infantil'
+
+      if (consolidatedType === 'Telas') {
         const locations = event.location.split('/').map(l => l.trim());
         locations.forEach(loc => {
           if (!uniqueCinemas.has(loc)) {
@@ -49,7 +57,7 @@ export default function Home() {
             all.push({
               id: `cinema-group-${loc}`,
               title: loc,
-              type: 'Cinema',
+              type: 'Telas',
               date: new Date(),
               location: 'Recife',
               image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=800',
@@ -66,7 +74,7 @@ export default function Home() {
         all.push({
           id: `event-${event.id}`,
           title: event.title,
-          type: event.category,
+          type: consolidatedType,
           date: new Date(event.date),
           location: event.location,
           image: event.image,
@@ -78,7 +86,7 @@ export default function Home() {
 
     teatroData.forEach(teatro =>
       teatro.shows.forEach(show => {
-        all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Teatro', date: new Date(), location: teatro.name, image: show.poster, link: '/teatro', price: 1 })
+        all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Palcos', date: new Date(), location: teatro.name, image: show.poster, link: '/teatro', price: 1 })
       })
     )
 
@@ -86,7 +94,7 @@ export default function Home() {
       all.push({ 
         id: `feira-${feira.id}`, 
         title: feira.name, 
-        type: 'Feira', 
+        type: 'Rua', 
         date: new Date(), 
         location: feira.address, 
         image: feira.image, 
@@ -213,7 +221,9 @@ export default function Home() {
                           <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
                           <p><i className="far fa-calendar-alt"></i> {event.days}</p>
                           <span className="feira-tag">{event.feiraType}</span>
-                          <button className="action-icon-btn schedule-mini" style={{ marginTop: '10px', width: '100%' }} onClick={() => addToSchedule(event)}>🗓️ Adicionar</button>
+                          <button className="action-icon-btn schedule-mini btn-add-schedule" style={{ marginTop: '10px', width: '100%' }} onClick={() => addToSchedule(event)}>
+                            <i className="far fa-calendar-plus"></i> Adicionar
+                          </button>
                         </div>
                       ) : <EventCard key={event.id} event={event} isSmall={true} />
                     ))}

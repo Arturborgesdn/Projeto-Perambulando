@@ -41,8 +41,8 @@ function ShowModal({ details, onClose }) {
           <p><strong>Preço:</strong> {session.price}</p>
 
           <div className="event-detail-actions" style={{ marginTop: 20 }}>
-            <button className="btn-submit" onClick={addToSchedule}>
-              🗓️ Adicionar à Minha Programação
+            <button className="btn-submit btn-add-schedule" onClick={addToSchedule}>
+              <i className="far fa-calendar-plus"></i> Adicionar à Minha Programação
             </button>
             {teatro?.instagramLink && (
               <a href={teatro.instagramLink} target="_blank" rel="noopener noreferrer" className="btn-instagram">

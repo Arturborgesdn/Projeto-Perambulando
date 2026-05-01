@@ -59,8 +59,8 @@ function SessionModal({ details, onClose }) {
           <p><strong>Sessão:</strong> {sessionTime} ({sessionType}) — {formattedDate}</p>
           
           <div className="event-detail-actions" style={{ marginTop: 20 }}>
-            <button className="btn-submit" onClick={addToSchedule}>
-              🗓️ Adicionar à Minha Programação
+            <button className="btn-submit btn-add-schedule" onClick={addToSchedule}>
+              <i className="far fa-calendar-plus"></i> Adicionar à Minha Programação
             </button>
             {cinema?.instagramLink && (
               <a href={cinema.instagramLink} target="_blank" rel="noopener noreferrer" className="btn-instagram">

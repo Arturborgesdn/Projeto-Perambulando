@@ -42,7 +42,7 @@ export default function EventCard({ event, isSmall }) {
       </Link>
       
       <div className="event-actions-bar">
-        <button className="action-icon-btn schedule-mini" onClick={addToSchedule} title="Adicionar à Programação">
+        <button className="action-icon-btn schedule-mini btn-add-schedule" onClick={addToSchedule} title="Adicionar à Programação">
           <i className="far fa-calendar-plus"></i>
         </button>
         
