@@ -33,8 +33,11 @@ export default function EventCard({ event, isSmall }) {
         <div className="event-info">
           <span className="category">{event.type}</span>
           <h3>{event.title}</h3>
-          <p><i className="far fa-calendar-alt"></i> {formattedDate}</p>
-          <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
+          <p className="tech-info"><i className="far fa-calendar-alt"></i> {formattedDate} - {formattedTime}</p>
+          <p className="tech-info">
+            <span className="pin-marker"></span>
+            {event.location}
+          </p>
         </div>
       </Link>
       

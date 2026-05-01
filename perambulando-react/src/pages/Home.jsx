@@ -141,7 +141,7 @@ export default function Home() {
       <main className="container">
         <section className="welcome-section">
           <div className="welcome-content">
-            <h1>Descubra o melhor do Recife com o Perambulando! 🗺️✨</h1>
+            <h1>Descubra o melhor do Recife. Vamos perambular? 🗺️✨</h1>
             <p>
               Somos o seu guia cultural definitivo. Explore shows, exposições, feiras e o que há de novo nos cinemas e teatros da nossa cidade.
             </p>
