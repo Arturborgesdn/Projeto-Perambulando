@@ -8,7 +8,7 @@ export default function Footer() {
             <p>Seu guia para desbravar a cultura do Recife.</p>
           </div>
           <div className="footer-social">
-            <a href="#" title="Instagram"><i className="fab fa-instagram"></i></a>
+            <a href="#" title="Ver Site Oficial"><i className="fas fa-external-link-alt"></i></a>
             <a href="#" title="Facebook"><i className="fab fa-facebook-f"></i></a>
             <a href="#" title="Twitter"><i className="fab fa-twitter"></i></a>
             <a href="#" title="Contato por E-mail"><i className="fas fa-envelope"></i></a>

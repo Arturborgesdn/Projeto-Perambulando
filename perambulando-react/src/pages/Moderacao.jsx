@@ -132,7 +132,7 @@ export default function Moderacao() {
                     <td>
                       <div className="table-links-status">
                         {evento.ticketLink && <i className="fas fa-ticket-alt" title="Tem link de compra"></i>}
-                        {evento.instagramLink && <i className="fab fa-instagram" title="Tem Instagram"></i>}
+                        {evento.instagramLink && <i className="fas fa-external-link-alt" title="Tem Site Oficial"></i>}
                       </div>
                     </td>
                     <td>
@@ -171,7 +171,7 @@ export default function Moderacao() {
                 <div className="form-group"><label>Local</label><input type="text" value={editingEvent.location} onChange={e => setEditingEvent({...editingEvent, location: e.target.value})} /></div>
                 <div className="form-group"><label>Valor</label><input type="text" value={editingEvent.price || ''} onChange={e => setEditingEvent({...editingEvent, price: e.target.value})} /></div>
                 <div className="form-group"><label>URL Imagem</label><input type="text" value={editingEvent.image} onChange={e => setEditingEvent({...editingEvent, image: e.target.value})} /></div>
-                <div className="form-group"><label>Link Instagram</label><input type="text" value={editingEvent.instagramLink || ''} onChange={e => setEditingEvent({...editingEvent, instagramLink: e.target.value})} /></div>
+                <div className="form-group"><label>Link Site Oficial</label><input type="text" value={editingEvent.instagramLink || ''} onChange={e => setEditingEvent({...editingEvent, instagramLink: e.target.value})} /></div>
                 <div className="form-group"><label>Link Compra</label><input type="text" value={editingEvent.ticketLink || ''} onChange={e => setEditingEvent({...editingEvent, ticketLink: e.target.value})} /></div>
               </div>
               <div className="form-group"><label>Descrição</label><textarea className="form-textarea" rows="4" value={editingEvent.description} onChange={e => setEditingEvent({...editingEvent, description: e.target.value})}></textarea></div>

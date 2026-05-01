@@ -64,7 +64,7 @@ function SessionModal({ details, onClose }) {
             </button>
             {cinema?.instagramLink && (
               <a href={cinema.instagramLink} target="_blank" rel="noopener noreferrer" className="btn-instagram">
-                <i className="fab fa-instagram"></i> Ver Cinema no Instagram
+                <i className="fas fa-external-link-alt"></i> Ver Site Oficial
               </a>
             )}
           </div>

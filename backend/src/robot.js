@@ -220,7 +220,7 @@ async function getInstagramEvents(username) {
             title, 
             image: node.display_url,
             description,
-            location: 'Verificar no Instagram',
+            location: 'Verificar no Site Oficial',
             category: identifyCategory(caption),
             date: date,
             price: caption.includes('gratuito') ? 'Gratuito' : 'Verificar no link',

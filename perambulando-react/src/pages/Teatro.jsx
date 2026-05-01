@@ -46,7 +46,7 @@ function ShowModal({ details, onClose }) {
             </button>
             {teatro?.instagramLink && (
               <a href={teatro.instagramLink} target="_blank" rel="noopener noreferrer" className="btn-instagram">
-                <i className="fab fa-instagram"></i> Ver Teatro no Instagram
+                <i className="fas fa-external-link-alt"></i> Ver Site Oficial
               </a>
             )}
           </div>

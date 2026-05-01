@@ -1,11 +1,11 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import EventCard from '../components/EventCard'
-import { mockEventsData } from '../data/data'
+import { mockEventsData, feirasData } from '../data/data'
 
 function CategoryPage({ title, emoji, category, description }) {
-  const events = mockEventsData
-    .filter(e => e.category === category)
+  const baseEvents = mockEventsData
+    .filter(e => e.category === category || (category === 'Rua' && e.category === 'Feiras'))
     .map(e => ({
       id: e.id,
       title: e.title,
@@ -17,12 +17,32 @@ function CategoryPage({ title, emoji, category, description }) {
       price: e.price,
     }))
 
+  let extraEvents = []
+  if (category === 'Rua') {
+    extraEvents = feirasData.map(f => ({
+      id: `feira-${f.id}`,
+      title: f.name,
+      type: 'Rua',
+      date: new Date(), // Feiras costumam ser recorrentes, usando data atual para exibição
+      location: f.address,
+      image: f.image,
+      link: '/rua',
+      price: 'Gratuito',
+      isFeira: true,
+      days: f.days,
+      time: f.time,
+      feiraType: f.type
+    }))
+  }
+
+  const events = [...baseEvents, ...extraEvents]
+
   return (
     <div>
       <Header />
       <main className="container">
         <div className="page-header">
-          <h1>{emoji} {title}</h1>
+          <h1 style={{ color: 'var(--accent-orange)' }}>{emoji} {title}</h1>
           <p>{description}</p>
         </div>
         <div className="events-grid">

@@ -15,6 +15,24 @@ const CATEGORIES_WITH_ICONS = [
   { name: 'Infantil', icon: 'fas fa-child' },       // Infantil
 ]
 
+const getCategoryRoute = (category) => {
+  const map = {
+    'Palcos': '/palcos',
+    'Telas': '/telas',
+    'Artes': '/artes',
+    'Rua': '/rua',
+    'Infantil': '/infantil',
+    'Cinema': '/telas',
+    'Teatro': '/palcos',
+    'Restaurantes': '/restaurantes',
+    'Feiras': '/rua',
+    'Shows': '/palcos',
+    'Exposições': '/artes',
+    'Lazer': '/rua'
+  };
+  return map[category] || '/';
+};
+
 export default function Home() {
   const [eventsFromApi, setEventsFromApi] = useState([])
   const [search, setSearch] = useState('')
@@ -61,7 +79,7 @@ export default function Home() {
               date: new Date(),
               location: 'Recife',
               image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=800',
-              link: '/cinema',
+              link: '/telas',
               price: 1
             });
           }
@@ -78,7 +96,7 @@ export default function Home() {
           date: new Date(event.date),
           location: event.location,
           image: event.image,
-          link: `/evento/${event.id}`,
+          link: getCategoryRoute(consolidatedType),
           price: priceValue,
         })
       }
@@ -86,7 +104,7 @@ export default function Home() {
 
     teatroData.forEach(teatro =>
       teatro.shows.forEach(show => {
-        all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Palcos', date: new Date(), location: teatro.name, image: show.poster, link: '/teatro', price: 1 })
+        all.push({ id: `teatro-${show.title}`, title: show.title, type: 'Palcos', date: new Date(), location: teatro.name, image: show.poster, link: '/palcos', price: 1 })
       })
     )
 
@@ -98,7 +116,7 @@ export default function Home() {
         date: new Date(), 
         location: feira.address, 
         image: feira.image, 
-        link: '/feiras', 
+        link: '/rua', 
         price: 0,
         days: feira.days,
         time: feira.time,
@@ -111,7 +129,7 @@ export default function Home() {
         ...event,
         id: `mock-${event.id}`,
         date: new Date(event.date),
-        link: `/evento/${event.id}`,
+        link: getCategoryRoute(event.category),
         type: event.category 
       })
     })
@@ -162,21 +180,21 @@ export default function Home() {
           <div className="welcome-content">
             <h1>Descubra o melhor do Recife. Vamos perambular? 🗺️✨</h1>
             <p>
-              Somos o seu guia cultural definitivo. Explore shows, exposições, feiras e o que há de novo nos cinemas e teatros da nossa cidade.
+              Somos o seu guia cultural definitivo. Explore shows, exposições, eventos de rua e o que há de novo nos cinemas e teatros da nossa cidade.
             </p>
             <div className="features-mini-grid">
-              <div className="feature-item">
-                <i className="fas fa-calendar-check"></i>
-                <span>Crie seu Roteiro</span>
-              </div>
-              <div className="feature-item">
+              <Link to="/painel" className="feature-item">
+                <i className="fas fa-calendar-alt"></i>
+                <span>Minha Programação</span>
+              </Link>
+              <Link to="/eventos-do-dia" className="feature-item">
+                <i className="fas fa-bolt"></i>
+                <span>Eventos do Dia</span>
+              </Link>
+              <Link to="/roteiros" className="feature-item">
                 <i className="fas fa-map-marked-alt"></i>
                 <span>Roteiros Prontos</span>
-              </div>
-              <div className="feature-item">
-                <i className="fas fa-ticket-alt"></i>
-                <span>Ingressos Diretos</span>
-              </div>
+              </Link>
             </div>
           </div>
           <div className="welcome-cta-box">
@@ -216,7 +234,9 @@ export default function Home() {
               Object.keys(grouped).map(catName => (
                 <div key={catName} className="grouped-category-section">
                   <div className="section-header">
-                    <h3 className="section-title">{catName}</h3>
+                    <Link to={getCategoryRoute(catName)} style={{ textDecoration: 'none' }}>
+                      <h3 className="section-title">{catName}</h3>
+                    </Link>
                     {grouped[catName].length > 4 && (
                       <div className="scroll-controls">
                         <button onClick={() => scroll(catName, 'left')} className="scroll-btn"><i className="fas fa-chevron-left"></i></button>
@@ -226,18 +246,7 @@ export default function Home() {
                   </div>
                   <div className={`events-grid small-cards ${grouped[catName].length > 4 ? 'horizontal-scroll' : ''}`} ref={el => scrollRefs.current[catName] = el}>
                     {grouped[catName].map(event => (
-                      event.type === 'Rua' && event.id.startsWith('feira-') ? (
-                        <div className="feira-card" key={event.id}>
-                          <h3>{event.title}</h3>
-                          <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
-                          <p><i className="far fa-calendar-alt"></i> {event.days}</p>
-                          <p><i className="far fa-clock"></i> {event.time}</p>
-                          <span className="feira-tag">{event.feiraType}</span>
-                          <button className="action-icon-btn schedule-mini btn-add-schedule" style={{ marginTop: '10px', width: '100%' }} onClick={() => addToSchedule(event)}>
-                            <i className="far fa-calendar-plus"></i> Adicionar
-                          </button>
-                        </div>
-                      ) : <EventCard key={event.id} event={event} isSmall={true} />
+                      <EventCard key={event.id} event={event} isSmall={true} />
                     ))}
                   </div>
                 </div>

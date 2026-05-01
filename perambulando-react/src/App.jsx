@@ -3,12 +3,7 @@ import Home from './pages/Home'
 import Cinema from './pages/Cinema'
 import Teatro from './pages/Teatro'
 import Restaurantes from './pages/Restaurantes'
-import Feiras from './pages/Feiras'
-import Shows from './pages/Shows'
-import Exposicoes from './pages/Exposicoes'
-import Lazer from './pages/Lazer'
-import Infantil from './pages/Infantil'
-import Telas from './pages/Telas'
+import { Shows, Exposicoes, Lazer, Infantil, Telas, Palcos, Artes, Rua } from './pages/CategoryPages'
 import EventosDoDia from './pages/EventosDoDia'
 import RoteiroProntos from './pages/RoteiroProntos'
 import Painel from './pages/Painel'
@@ -23,15 +18,23 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/cinema" element={<Cinema />} />
-        <Route path="/teatro" element={<Teatro />} />
+        <Route path="/cinema" element={<Telas />} />
+        <Route path="/teatro" element={<Palcos />} />
         <Route path="/restaurantes" element={<Restaurantes />} />
-        <Route path="/feiras" element={<Feiras />} />
+        
+        {/* Novas rotas de categoria consolidadas */}
+        <Route path="/palcos" element={<Palcos />} />
+        <Route path="/telas" element={<Telas />} />
+        <Route path="/artes" element={<Artes />} />
+        <Route path="/rua" element={<Rua />} />
+        <Route path="/infantil" element={<Infantil />} />
+        
+        {/* Aliases para compatibilidade */}
         <Route path="/shows" element={<Shows />} />
         <Route path="/exposicoes" element={<Exposicoes />} />
         <Route path="/lazer" element={<Lazer />} />
-        <Route path="/infantil" element={<Infantil />} />
-        <Route path="/telas" element={<Telas />} />
+        <Route path="/feiras" element={<Rua />} />
+
         <Route path="/eventos-do-dia" element={<EventosDoDia />} />
         <Route path="/roteiros" element={<RoteiroProntos />} />
         <Route path="/painel" element={<Painel />} />

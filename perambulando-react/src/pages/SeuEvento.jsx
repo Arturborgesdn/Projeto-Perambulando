@@ -141,11 +141,11 @@ export default function SeuEvento() {
               </div>
 
               <div className="form-group">
-                <label>URL Instagram (Opcional)</label>
+                <label>URL Site Oficial (Opcional)</label>
                 <input
                   type="url"
                   name="instagramLink"
-                  placeholder="https://instagram.com/seu-evento"
+                  placeholder="https://siteoficial.com/seu-evento"
                   value={formData.instagramLink}
                   onChange={handleInputChange}
                 />

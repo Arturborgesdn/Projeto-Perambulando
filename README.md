@@ -34,7 +34,7 @@ Qualquer produtor, artista ou organizador pode cadastrar seu evento diretamente 
 Além de listar eventos, o Perambulando sugere roteiros temáticos pela cidade — passeios culturais, gastronômicos, históricos. Algo que plataformas de venda de ingressos jamais fariam, porque o objetivo delas é a transação, não a experiência.
 
 ### Tudo em um só lugar
-No Perambulando você não precisa abrir o site do cinema, depois o do teatro, depois o Instagram de um produtor local. Cinema, teatro, shows, feiras, restaurantes, eventos infantis — uma busca, tudo na tela.
+No Perambulando você não precisa abrir o site do cinema, depois o do teatro, depois o site oficial de um produtor local. Cinema, teatro, shows, feiras, restaurantes, eventos infantis — uma busca, tudo na tela.
 
 ### Contrução de roteiros personalizados
 No Perambulando o usuário pode montar a sua programação personalizada e compartilhar com amigos familiares

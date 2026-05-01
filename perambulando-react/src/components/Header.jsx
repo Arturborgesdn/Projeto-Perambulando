@@ -1,11 +1,36 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Verifica se há um usuário logado no localStorage
+    const checkLogin = () => {
+      const user = localStorage.getItem('currentUser');
+      setIsLoggedIn(!!user);
+    };
+
+    checkLogin();
+    // Escuta mudanças no localStorage (caso o login ocorra em outra aba ou via evento customizado)
+    window.addEventListener('storage', checkLogin);
+    
+    return () => window.removeEventListener('storage', checkLogin);
+  }, []);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    setIsLoggedIn(false);
+    closeMenu();
+    navigate('/');
+    // Força um pequeno refresh ou evento para outros componentes que dependem do login
+    window.dispatchEvent(new Event('storage'));
+  };
 
   return (
     <>
@@ -23,21 +48,7 @@ export default function Header() {
             <img src="/logo.png" alt="Logo Perambulando" className="logo-img" />
           </Link>
 
-          <div className="user-profile">
-            <Link to="/seu-evento" title="Divulgue seu Evento">
-              <i className="fas fa-plus-circle"></i>
-            </Link>
-            <Link
-              to="/painel"
-              title="Minha Programação"
-              className="painel-link"
-            >
-              <i className="far fa-calendar-alt"></i>
-            </Link>
-            <Link to="/login" title="Entrar">
-              <i className="fas fa-user-circle"></i>
-            </Link>
-          </div>
+          <div className="header-right-placeholder" style={{ width: '42px' }}></div>
         </div>
       </header>
 
@@ -48,6 +59,14 @@ export default function Header() {
         <Link to="/" onClick={closeMenu}>
           Início
         </Link>
+        <div className="menu-divider" style={{ padding: '10px 30px', fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>Categorias</div>
+        <Link to="/palcos" onClick={closeMenu}><i className="fas fa-masks-theater" style={{ marginRight: '10px' }}></i> Palcos</Link>
+        <Link to="/telas" onClick={closeMenu}><i className="fas fa-film" style={{ marginRight: '10px' }}></i> Telas</Link>
+        <Link to="/artes" onClick={closeMenu}><i className="fas fa-palette" style={{ marginRight: '10px' }}></i> Artes</Link>
+        <Link to="/rua" onClick={closeMenu}><i className="fas fa-map-signs" style={{ marginRight: '10px' }}></i> Rua</Link>
+        <Link to="/infantil" onClick={closeMenu}><i className="fas fa-child" style={{ marginRight: '10px' }}></i> Infantil</Link>
+        
+        <div className="menu-divider" style={{ padding: '10px 30px', fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>Explorar</div>
         <Link to="/seu-evento" onClick={closeMenu}>
           Divulgue seu Evento
         </Link>
@@ -64,9 +83,15 @@ export default function Header() {
         >
           Minha Programação
         </Link>
-        <Link to="/login" onClick={closeMenu}>
-          Login / Cadastro
-        </Link>
+        {isLoggedIn ? (
+          <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
+            Sair da Conta
+          </a>
+        ) : (
+          <Link to="/login" onClick={closeMenu}>
+            Login / Cadastro
+          </Link>
+        )}
       </nav>
 
       {menuOpen && (
