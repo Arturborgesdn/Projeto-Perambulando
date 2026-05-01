@@ -46,13 +46,13 @@ export default function EventCard({ event, isSmall }) {
           <i className="far fa-calendar-plus"></i>
         </button>
         
-        {event.ticketLink && (
+        {!isSmall && event.ticketLink && (
           <a href={event.ticketLink} target="_blank" rel="noopener noreferrer" className="action-icon-btn ticket">
             <i className="fas fa-ticket-alt"></i> Ingressos
           </a>
         )}
         
-        {event.instagramLink && (
+        {!isSmall && event.instagramLink && (
           <a href={event.instagramLink} target="_blank" rel="noopener noreferrer" className="action-icon-btn instagram">
             <i className="fab fa-instagram"></i>
           </a>

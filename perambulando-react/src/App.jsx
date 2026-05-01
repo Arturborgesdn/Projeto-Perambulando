@@ -8,6 +8,7 @@ import Shows from './pages/Shows'
 import Exposicoes from './pages/Exposicoes'
 import Lazer from './pages/Lazer'
 import Infantil from './pages/Infantil'
+import Telas from './pages/Telas'
 import EventosDoDia from './pages/EventosDoDia'
 import RoteiroProntos from './pages/RoteiroProntos'
 import Painel from './pages/Painel'
@@ -30,6 +31,7 @@ function App() {
         <Route path="/exposicoes" element={<Exposicoes />} />
         <Route path="/lazer" element={<Lazer />} />
         <Route path="/infantil" element={<Infantil />} />
+        <Route path="/telas" element={<Telas />} />
         <Route path="/eventos-do-dia" element={<EventosDoDia />} />
         <Route path="/roteiros" element={<RoteiroProntos />} />
         <Route path="/painel" element={<Painel />} />

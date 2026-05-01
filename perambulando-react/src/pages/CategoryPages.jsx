@@ -38,18 +38,27 @@ function CategoryPage({ title, emoji, category, description }) {
   )
 }
 
-export function Shows() {
-  return <CategoryPage title="Shows" emoji="🎵" category="Shows" description="Os melhores shows e apresentações musicais do Recife" />
+export function Palcos() {
+  return <CategoryPage title="Palcos" emoji="🎭" category="Palcos" description="Teatro, shows e as melhores apresentações nos palcos do Recife" />
 }
 
-export function Exposicoes() {
-  return <CategoryPage title="Exposições" emoji="🖼️" category="Exposições" description="Arte, cultura e exposições imperdíveis" />
+export function Telas() {
+  return <CategoryPage title="Telas" emoji="🎬" category="Telas" description="Cinema, festivais audiovisuais e o melhor da sétima arte" />
 }
 
-export function Lazer() {
-  return <CategoryPage title="Programas de Lazer" emoji="🌿" category="Lazer" description="Passeios, atividades e diversão ao ar livre" />
+export function Artes() {
+  return <CategoryPage title="Artes" emoji="🖼️" category="Artes" description="Exposições, artes visuais e cultura" />
+}
+
+export function Rua() {
+  return <CategoryPage title="Rua" emoji="🏙️" category="Rua" description="Eventos ao ar livre, lazer e ocupação urbana" />
 }
 
 export function Infantil() {
-  return <CategoryPage title="Programas Infantis" emoji="🧒" category="Infantil" description="Diversão garantida para toda a família" />
+  return <CategoryPage title="Infantil" emoji="🧒" category="Infantil" description="Diversão garantida para toda a família" />
 }
+
+// Mantendo exportações antigas para compatibilidade de rotas se necessário
+export const Shows = Palcos;
+export const Exposicoes = Artes;
+export const Lazer = Rua;

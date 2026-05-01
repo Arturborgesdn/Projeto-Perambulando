@@ -1,1 +1,1 @@
-export { Shows as default } from './CategoryPages'
+export { Palcos as default } from './CategoryPages'

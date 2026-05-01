@@ -1,1 +1,1 @@
-export { Lazer as default } from './CategoryPages'
+export { Rua as default } from './CategoryPages'

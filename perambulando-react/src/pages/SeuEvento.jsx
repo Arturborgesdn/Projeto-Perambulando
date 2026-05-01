@@ -9,7 +9,7 @@ export default function SeuEvento() {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
-    category: 'Cultural',
+    category: 'Palcos',
     date: '',
     location: '',
     description: '',
@@ -86,16 +86,11 @@ export default function SeuEvento() {
               <div className="form-group">
                 <label>Categoria</label>
                 <select name="category" value={formData.category} onChange={handleInputChange}>
-                  <option value="Shows">Shows</option>
-                  <option value="Cinema">Cinema</option>
-                  <option value="Teatro">Teatro</option>
-                  <option value="Exposições">Exposições</option>
-                  <option value="Feira">Feira</option>
-                  <option value="Lazer">Lazer</option>
+                  <option value="Palcos">Palcos</option>
+                  <option value="Telas">Telas</option>
+                  <option value="Artes">Artes</option>
+                  <option value="Rua">Rua</option>
                   <option value="Infantil">Infantil</option>
-                  <option value="Gastronômico">Gastronômico</option>
-                  <option value="Cultural">Cultural</option>
-                  <option value="Cursos">Cursos</option>
                 </select>
               </div>
 

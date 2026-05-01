@@ -420,33 +420,26 @@ h5,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 7px 16px;
-  background: linear-gradient(
-    135deg,
-    var(--accent) 0%,
-    var(--accent-dark) 100%
-  );
-  color: white;
-  border: none;
-  border-radius: var(--radius-pill);
-  font-family: "Nunito", sans-serif;
-  font-size: 0.8rem;
+  padding: 8px 16px;
+  background-color: var(--white);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: var(--shadow-sm);
 }
 
 .session-link:hover,
 .session-btn:hover {
+  background-color: var(--primary);
+  color: var(--white);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
-  background: linear-gradient(
-    135deg,
-    var(--accent-light) 0%,
-    var(--accent) 100%
-  );
+  box-shadow: var(--shadow);
 }
 
 /* Buy Ticket / Ticket Btn */
@@ -458,20 +451,20 @@ h5,
   gap: 8px;
   background: linear-gradient(
     135deg,
-    var(--success) 0%,
-    var(--success-dark) 100%
+    var(--accent-orange) 0%,
+    #e55a2b 100%
   );
   color: white;
   border: none;
   padding: 14px 28px;
   border-radius: var(--radius-pill);
-  font-family: "Nunito", sans-serif;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
   text-decoration: none;
   transition: var(--transition);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
   text-align: center;
   width: 100%;
 }
@@ -479,7 +472,7 @@ h5,
 .buy-ticket-btn:hover,
 .btn-ticket:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
 }
 
 /* Instagram Btn */
@@ -1467,42 +1460,58 @@ header .container {
 
 .feira-card {
   background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: 22px;
+  border-radius: var(--radius-sm);
+  padding: 24px;
   box-shadow: var(--shadow);
-  border-left: 4px solid var(--primary);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--primary);
   transition: var(--transition);
+  position: relative;
 }
 
 .feira-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
+  border-color: var(--primary-glow);
 }
 
 .feira-card h3 {
-  color: var(--dark);
-  margin-bottom: 10px;
-  font-weight: 800;
+  font-family: var(--font-title);
+  color: var(--primary);
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
+
 .feira-card p {
-  font-size: 0.85rem;
-  margin-bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--text-light);
+  gap: 10px;
+  color: var(--text-main);
+}
+
+.feira-card p i {
+  color: var(--primary);
+  width: 16px;
+  text-align: center;
 }
 
 .feira-tag {
   display: inline-block;
-  background: rgba(255, 107, 53, 0.1);
+  background-color: var(--bg-paper);
   color: var(--primary);
   padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   font-weight: 700;
-  margin-top: 8px;
-  border: 1px solid rgba(255, 107, 53, 0.18);
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* ===== PAINEL ===== */
@@ -2263,19 +2272,19 @@ header .container {
 .action-icon-btn.ticket {
   background: linear-gradient(
     135deg,
-    var(--success) 0%,
-    var(--success-dark) 100%
+    var(--accent-orange) 0%,
+    #e55a2b 100%
   );
   color: white;
   padding: 6px 14px;
   height: 34px;
   flex: 1;
-  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.28);
+  box-shadow: 0 3px 10px rgba(255, 107, 53, 0.28);
 }
 
 .action-icon-btn.ticket:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 18px rgba(255, 107, 53, 0.4);
   opacity: 0.93;
 }
 

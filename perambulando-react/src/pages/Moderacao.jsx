@@ -160,16 +160,11 @@ export default function Moderacao() {
                 <div className="form-group">
                   <label>Categoria</label>
                   <select value={editingEvent.category} onChange={e => setEditingEvent({...editingEvent, category: e.target.value})}>
-                    <option value="Shows">Shows</option>
-                    <option value="Cinema">Cinema</option>
-                    <option value="Teatro">Teatro</option>
-                    <option value="Exposições">Exposições</option>
-                    <option value="Feira">Feira</option>
-                    <option value="Lazer">Lazer</option>
+                    <option value="Palcos">Palcos</option>
+                    <option value="Telas">Telas</option>
+                    <option value="Artes">Artes</option>
+                    <option value="Rua">Rua</option>
                     <option value="Infantil">Infantil</option>
-                    <option value="Gastronômico">Gastronômico</option>
-                    <option value="Cultural">Cultural</option>
-                    <option value="Cursos">Cursos</option>
                   </select>
                 </div>
                 <div className="form-group"><label>Data/Hora</label><input type="datetime-local" value={editingEvent.date} onChange={e => setEditingEvent({...editingEvent, date: e.target.value})} /></div>

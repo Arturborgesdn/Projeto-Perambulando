@@ -42,7 +42,36 @@ export const foodData = [
 // DADOS DE FEIRAS
 // =======================================================
 export const feirasData = [
-  { id: 1, name: 'Feira de Boa Viagem', zone: 'Sul', address: 'Praça de Boa Viagem, Recife', days: 'Domingos', type: 'Artesanato', image: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?q=80&w=800' },
+  { 
+    id: 1, 
+    name: 'Feira de Boa Viagem', 
+    zone: 'Sul', 
+    address: 'Praça de Boa Viagem, Recife', 
+    days: 'Diariamente', 
+    time: '16:00 às 22:00',
+    type: 'Artesanato e Gastronomia', 
+    image: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?q=80&w=800' 
+  },
+  { 
+    id: 2, 
+    name: 'Mercado do Bom Jesus', 
+    zone: 'Centro', 
+    address: 'Rua do Bom Jesus, Recife Antigo', 
+    days: 'Domingos', 
+    time: '14:00 às 20:00',
+    type: 'Antiguidades e Arte', 
+    image: 'https://visit.recife.pe.gov.br/sites/default/files/styles/large/public/2023-05/feira_bom_jesus_0.jpg' 
+  },
+  { 
+    id: 3, 
+    name: 'Feirinha de Casa Forte', 
+    zone: 'Norte', 
+    address: 'Praça de Casa Forte, Recife', 
+    days: 'Sábados e Domingos', 
+    time: '15:00 às 21:00',
+    type: 'Artesanato Local', 
+    image: 'https://visit.recife.pe.gov.br/sites/default/files/styles/large/public/2023-05/praca_casa_forte_0.jpg' 
+  }
 ]
 
 // =======================================================
@@ -91,4 +120,65 @@ export const roteirosData = [
   }
 ]
 
-export const mockEventsData = []; 
+export const mockEventsData = [
+  {
+    id: 101,
+    title: 'Alceu Valença - Turnê Mágica',
+    category: 'Palcos',
+    date: '2026-09-12T21:00:00',
+    location: 'Marco Zero, Recife Antigo',
+    description: 'O mestre Alceu Valença traz seus grandes sucessos em um show gratuito no coração do Recife.',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/e/ed/Alceu_Valen%C3%A7a_-_Recife_-_PE.jpg',
+    price: 'Gratuito',
+    instagramLink: 'https://www.instagram.com/alceuvalenca',
+    ticketLink: ''
+  },
+  {
+    id: 102,
+    title: 'Cine PE - Festival do Audiovisual',
+    category: 'Telas',
+    date: '2026-10-05T19:30:00',
+    location: 'Cinema São Luiz, Recife',
+    description: 'A 30ª edição do maior festival de cinema de Pernambuco, com mostras competitivas e debates.',
+    image: 'https://visit.recife.pe.gov.br/sites/default/files/styles/large/public/2023-05/cine_sao_luiz_0.jpg',
+    price: 'R$ 10',
+    instagramLink: 'https://www.instagram.com/festivalcinepe',
+    ticketLink: 'https://www.cinepe.com.br'
+  },
+  {
+    id: 103,
+    title: 'Brennand: A Arte da Terra',
+    category: 'Artes',
+    date: '2026-09-20T10:00:00',
+    location: 'Oficina Cerâmica Francisco Brennand',
+    description: 'Exposição permanente e mostras temporárias no santuário artístico da Várzea.',
+    image: 'https://visit.recife.pe.gov.br/sites/default/files/styles/large/public/2023-05/oficina_brennand_0.jpg',
+    price: 'R$ 30',
+    instagramLink: 'https://www.instagram.com/oficinabrennand',
+    ticketLink: 'https://www.oficinabrennand.org.br'
+  },
+  {
+    id: 104,
+    title: 'Domingo na Arena',
+    category: 'Rua',
+    date: '2026-09-13T09:00:00',
+    location: 'Arena de Pernambuco, São Lourenço',
+    description: 'Um dia de lazer com polo esportivo, brinquedos infláveis, feira e shows gratuitos.',
+    image: 'https://visit.recife.pe.gov.br/sites/default/files/styles/large/public/2023-05/arena_pe_0.jpg',
+    price: 'Gratuito',
+    instagramLink: 'https://www.instagram.com/arenapernambuco',
+    ticketLink: ''
+  },
+  {
+    id: 105,
+    title: 'Teatro Mirim: O Mágico de Oz',
+    category: 'Infantil',
+    date: '2026-09-19T16:00:00',
+    location: 'Teatro Luiz Mendonça, Parque Dona Lindu',
+    description: 'Uma adaptação encantadora do clássico para toda a família em um dos palcos mais bonitos da orla.',
+    image: 'https://visit.recife.pe.gov.br/sites/default/files/styles/large/public/2023-05/parque_dona_lindu_0.jpg',
+    price: 'R$ 40',
+    instagramLink: 'https://www.instagram.com/parquedonalindu',
+    ticketLink: ''
+  }
+]; 

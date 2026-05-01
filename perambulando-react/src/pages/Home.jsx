@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import EventCard from '../components/EventCard'
 import Carousel from '../components/Carousel'
-import { cinemaData, teatroData, feirasData } from '../data/data'
+import { cinemaData, teatroData, feirasData, mockEventsData } from '../data/data'
 
 const CATEGORIES_WITH_ICONS = [
   { name: 'Todos', icon: 'fas fa-th-large' },
@@ -42,12 +42,12 @@ export default function Home() {
       const originalCat = event.category || ''
       let consolidatedType = originalCat
 
-      // Mapeamento para novas categorias
-      if (originalCat === 'Cinema') consolidatedType = 'Telas'
-      else if (['Teatro', 'Shows'].includes(originalCat)) consolidatedType = 'Palcos'
-      else if (originalCat === 'Exposições') consolidatedType = 'Artes'
-      else if (['Feira', 'Lazer'].includes(originalCat)) consolidatedType = 'Rua'
-      else if (originalCat === 'Infantil') consolidatedType = 'Infantil'
+      // Mapeamento para novas categorias (Suporta nomes antigos e novos)
+      if (['Cinema', 'Telas'].includes(originalCat)) consolidatedType = 'Telas'
+      else if (['Teatro', 'Shows', 'Palcos'].includes(originalCat)) consolidatedType = 'Palcos'
+      else if (['Exposições', 'Artes'].includes(originalCat)) consolidatedType = 'Artes'
+      else if (['Feira', 'Lazer', 'Rua'].includes(originalCat)) consolidatedType = 'Rua'
+      else if (['Infantil'].includes(originalCat)) consolidatedType = 'Infantil'
 
       if (consolidatedType === 'Telas') {
         const locations = event.location.split('/').map(l => l.trim());
@@ -61,7 +61,7 @@ export default function Home() {
               date: new Date(),
               location: 'Recife',
               image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=800',
-              link: `/cinema-programacao/${encodeURIComponent(loc)}`,
+              link: '/cinema',
               price: 1
             });
           }
@@ -101,9 +101,20 @@ export default function Home() {
         link: '/feiras', 
         price: 0,
         days: feira.days,
+        time: feira.time,
         feiraType: feira.type
       })
     )
+
+    mockEventsData.forEach(event => {
+      all.push({
+        ...event,
+        id: `mock-${event.id}`,
+        date: new Date(event.date),
+        link: `/evento/${event.id}`,
+        type: event.category 
+      })
+    })
 
     return all.sort((a, b) => b.date - a.date)
   }, [eventsFromApi])
@@ -215,11 +226,12 @@ export default function Home() {
                   </div>
                   <div className={`events-grid small-cards ${grouped[catName].length > 4 ? 'horizontal-scroll' : ''}`} ref={el => scrollRefs.current[catName] = el}>
                     {grouped[catName].map(event => (
-                      event.type === 'Feira' ? (
+                      event.type === 'Rua' && event.id.startsWith('feira-') ? (
                         <div className="feira-card" key={event.id}>
                           <h3>{event.title}</h3>
                           <p><i className="fas fa-map-marker-alt"></i> {event.location}</p>
                           <p><i className="far fa-calendar-alt"></i> {event.days}</p>
+                          <p><i className="far fa-clock"></i> {event.time}</p>
                           <span className="feira-tag">{event.feiraType}</span>
                           <button className="action-icon-btn schedule-mini btn-add-schedule" style={{ marginTop: '10px', width: '100%' }} onClick={() => addToSchedule(event)}>
                             <i className="far fa-calendar-plus"></i> Adicionar

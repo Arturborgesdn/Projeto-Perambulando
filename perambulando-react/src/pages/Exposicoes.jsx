@@ -1,1 +1,1 @@
-export { Exposicoes as default } from './CategoryPages'
+export { Artes as default } from './CategoryPages'

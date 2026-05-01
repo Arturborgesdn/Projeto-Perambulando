@@ -45,14 +45,11 @@ function identifyCategory(text) {
   const lowerText = text.toLowerCase();
   
   const rules = [
-    { cat: 'Teatro', kws: ['teatro', 'espetáculo', 'peça', 'atuação', 'monólogo', 'comédia', 'stand-up'] },
-    { cat: 'Cinema', kws: ['cinema', 'filme', 'estreia', 'telão', 'cine'] },
-    { cat: 'Exposições', kws: ['exposição', 'arte', 'museu', 'galeria', 'obras', 'mostra'] },
-    { cat: 'Feiras', kws: ['feira', 'mercado', 'artesanato'] },
-    { cat: 'Infantil', kws: ['infantil', 'criança', 'teatro mirim', 'recreação', 'oficina', 'kids'] },
-    { cat: 'Gastronômico', kws: ['gastronomia', 'comida', 'chef', 'degustação', 'vinho', 'jantar', 'almoço', 'culinária', 'restaurante', 'café'] },
-    { cat: 'Cursos', kws: ['workshop', 'curso', 'aula', 'palestra', 'aprendizado', 'oficina', 'mentoria'] },
-    { cat: 'Cultural', kws: ['cultural', 'cultura', 'patrimônio', 'história', 'folclore', 'debate', 'literatura', 'livro', 'poesia', 'sarau', 'biblioteca'] }
+    { cat: 'Palcos', kws: ['teatro', 'espetáculo', 'peça', 'atuação', 'monólogo', 'comédia', 'stand-up', 'show', 'música', 'cantor', 'cantora', 'banda', 'concerto', 'festival', 'palco', 'dj', 'orquestra', 'samba', 'rock', 'axé', 'frevo'] },
+    { cat: 'Telas', kws: ['cinema', 'filme', 'estreia', 'telão', 'cine'] },
+    { cat: 'Artes', kws: ['exposição', 'arte', 'museu', 'galeria', 'obras', 'mostra', 'workshop', 'curso', 'aula', 'palestra', 'aprendizado', 'oficina', 'mentoria', 'cultural', 'cultura', 'patrimônio', 'história', 'folclore', 'debate', 'literatura', 'livro', 'poesia', 'sarau', 'biblioteca'] },
+    { cat: 'Rua', kws: ['feira', 'mercado', 'artesanato', 'gastronomia', 'comida', 'chef', 'degustação', 'vinho', 'jantar', 'almoço', 'culinária', 'restaurante', 'café', 'lazer', 'parque', 'praça'] },
+    { cat: 'Infantil', kws: ['infantil', 'criança', 'teatro mirim', 'recreação', 'oficina', 'kids'] }
   ];
 
   for (const rule of rules) {
@@ -61,13 +58,7 @@ function identifyCategory(text) {
     }
   }
 
-  const hasShowWord = /\bshow\b/i.test(lowerText);
-  const musicalContext = ['música', 'cantor', 'cantora', 'banda', 'concerto', 'festival', 'palco', 'dj', 'orquestra', 'samba', 'rock', 'axé', 'frevo'].some(kw => lowerText.includes(kw));
-  
-  if (hasShowWord && musicalContext) return 'Shows';
-  if (!hasShowWord && musicalContext) return 'Shows';
-
-  return 'Cultural'; 
+  return 'Artes'; // Default para Cultural/Geral
 }
 
 const MONTHS_MAP = {
