@@ -29,6 +29,7 @@ export default function Painel() {
     
     // Pequeno feedback visual antes de capturar
     const btn = document.querySelector('.export-btn');
+    const originalText = btn.innerHTML;
     btn.innerText = 'Gerando imagem...';
 
     try {
@@ -44,22 +45,25 @@ export default function Painel() {
       link.href = image;
       link.download = `meu-roteiro-${selectedDate}.png`;
       link.click();
-      
-      // Simulação de compartilhamento via Web Share API se disponível
-      if (navigator.share) {
-        const blob = await (await fetch(image)).blob();
-        const file = new File([blob], 'roteiro.png', { type: 'image/png' });
-        navigator.share({
-          title: 'Meu Roteiro no Perambulando',
-          text: `Confira minha programação para o dia ${selectedDate}! Veja mais no site: ${window.location.origin}`,
-          files: [file]
-        }).catch(() => {});
-      }
     } catch (err) {
       console.error('Erro ao exportar:', err);
     } finally {
-      btn.innerHTML = '<i class="fas fa-camera"></i> Exportar Roteiro';
+      btn.innerHTML = originalText;
     }
+  }
+
+  function shareToWhatsApp() {
+    const items = getItemsForDay(selectedDate);
+    if (items.length === 0) return alert('Sua programação está vazia!');
+
+    let message = `*📍 Meu Roteiro Perambulando - ${displayDate}*\n\n`;
+    items.forEach(item => {
+      message += `🕒 *${item.time}* - ${item.title}\n_${item.details}_\n\n`;
+    });
+    message += `Monte o seu também em: ${window.location.origin}`;
+
+    const encoded = encodeURIComponent(message);
+    window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
   }
 
   function getItemsForDay(dateStr) {
@@ -110,8 +114,45 @@ export default function Painel() {
           <p style={{ color: 'var(--secondary-color)', marginBottom: 20 }}>
             <i className="fas fa-envelope"></i> {currentUser.email}
           </p>
-          <p>Organize seu dia e não perca nenhum evento!</p>
         </div>
+
+        {/* JORNADA DO USUÁRIO - COMO FUNCIONA */}
+        <section className="user-journey-container">
+          <div className="journey-header">
+            <h3><i className="fas fa-map-signs"></i> Como montar seu roteiro perfeito?</h3>
+            <p>Siga os passos e perambule com organização pela cidade.</p>
+          </div>
+          <div className="journey-steps">
+            <div className="journey-step">
+              <div className="step-icon"><i className="fas fa-user-check"></i></div>
+              <div className="step-text">
+                <strong>1. Identifique-se</strong>
+                <p>Faça login para salvar seus planos para sempre.</p>
+              </div>
+            </div>
+            <div className="journey-step">
+              <div className="step-icon"><i className="fas fa-calendar-plus"></i></div>
+              <div className="step-text">
+                <strong>2. Explore e Adicione</strong>
+                <p>Navegue pelo site e clique em "Programar" nos eventos que curtir.</p>
+              </div>
+            </div>
+            <div className="journey-step">
+              <div className="step-icon"><i className="fas fa-edit"></i></div>
+              <div className="step-text">
+                <strong>3. Personalize</strong>
+                <p>Adicione anotações (almoços, paradas) para completar seu dia.</p>
+              </div>
+            </div>
+            <div className="journey-step">
+              <div className="step-icon"><i className="fab fa-whatsapp"></i></div>
+              <div className="step-text">
+                <strong>4. Compartilhe</strong>
+                <p>Gere uma imagem ou envie o roteiro de texto para seus amigos!</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div className="agenda-layout">
           <div className="agenda-controls">
@@ -150,40 +191,56 @@ export default function Painel() {
               <img src="/logo.png" alt="Logo" style={{ height: 30 }} />
               <span>perambulando.com.br</span>
             </div>
-            <h3>Programação para {displayDate}</h3>
-            <ul style={{ padding: 0 }}>
+            <h3 className="itinerary-title">Roteiro para {displayDate}</h3>
+            
+            <div className="timeline-container">
               {items.length === 0 ? (
-                <li className="empty-state" style={{ listStyle: 'none' }}>
-                  Nenhuma programação para este dia. Adicione eventos ou anotações!
-                </li>
+                <div className="empty-state">
+                  <i className="far fa-calendar-times" style={{ fontSize: '3rem', display: 'block', marginBottom: '15px', color: '#ccc' }}></i>
+                  Nenhuma programação para este dia.<br/>Adicione eventos ou anotações!
+                </div>
               ) : (
-                items.map(item => (
-                  <li key={item.id} className="schedule-item">
-                    <div className="schedule-item-time">{item.time}</div>
-                    <div className="schedule-item-content">
-                      <h4>{item.title}</h4>
-                      <p>{item.details}</p>
+                <div className="timeline">
+                  {items.map((item, index) => (
+                    <div key={item.id} className="timeline-item">
+                      <div className="timeline-marker">
+                        <div className="marker-dot"></div>
+                        {index !== items.length - 1 && <div className="marker-line"></div>}
+                      </div>
+                      <div className="timeline-content">
+                        <div className="timeline-time">{item.time}</div>
+                        <div className="timeline-card">
+                          <div className="card-info">
+                            <h4>{item.title}</h4>
+                            <p>{item.details}</p>
+                          </div>
+                          <button
+                            className="item-delete-btn"
+                            onClick={() => deleteItem(item.id)}
+                            title="Remover"
+                          >
+                            <i className="fas fa-times"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <button
-                      className="schedule-item-delete"
-                      onClick={() => deleteItem(item.id)}
-                      title="Remover item"
-                    >
-                      <i className="fas fa-trash-can"></i>
-                    </button>
-                  </li>
-                ))
+                  ))}
+                </div>
               )}
-            </ul>
+            </div>
+            
             <div className="trilha-footer-link">
-              Confira no site: <strong>{window.location.origin}</strong>
+              Monte seu roteiro em: <strong>{window.location.origin}</strong>
             </div>
           </div>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: 30 }}>
-          <button onClick={exportAsImage} className="export-btn">
-            <i className="fas fa-camera"></i> Exportar Roteiro
+        <div className="action-buttons-group" style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: 30, flexWrap: 'wrap' }}>
+          <button onClick={exportAsImage} className="export-btn secondary">
+            <i className="fas fa-camera"></i> Baixar como Imagem
+          </button>
+          <button onClick={shareToWhatsApp} className="export-btn whatsapp" style={{ background: '#25D366' }}>
+            <i className="fab fa-whatsapp"></i> Compartilhar no WhatsApp
           </button>
         </div>
       </main>

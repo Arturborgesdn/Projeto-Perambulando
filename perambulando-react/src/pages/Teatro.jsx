@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { teatroData } from '../data/data'
+import EventCard from '../components/EventCard'
+import { teatroData, mockEventsData } from '../data/data'
 
 function getRatingClass(rating) {
   if (!rating) return ''
@@ -70,53 +71,112 @@ function ShowModal({ details, onClose }) {
 
 export default function Teatro() {
   const [modal, setModal] = useState(null)
+  const [eventsFromApi, setEventsFromApi] = useState([])
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const response = await fetch('http://127.0.0.1:3001/api/eventos')
+        const data = await response.json()
+        setEventsFromApi(data)
+      } catch (error) {
+        console.error('Erro ao buscar eventos:', error)
+      }
+    }
+    fetchEvents()
+  }, [])
+
+  const palcosEvents = useMemo(() => {
+    // 1. Filtrar eventos estáticos
+    const staticEvents = mockEventsData
+      .filter(e => ['Palcos', 'Shows', 'Teatro'].includes(e.category))
+      .map(e => ({
+        ...e,
+        type: e.category,
+        date: new Date(e.date)
+      }));
+
+    // 2. Filtrar eventos da API
+    const apiEvents = eventsFromApi
+      .filter(e => ['Palcos', 'Shows', 'Teatro'].includes(e.category))
+      .map(e => ({
+        id: `event-${e.id}`,
+        title: e.title,
+        type: e.category,
+        date: new Date(e.date),
+        location: e.location,
+        image: e.image,
+        description: e.description,
+        price: e.price,
+        instagramLink: e.instagramLink,
+        ticketLink: e.ticketLink
+      }));
+
+    return [...staticEvents, ...apiEvents];
+  }, [eventsFromApi]);
 
   return (
     <div>
       <Header />
       <main className="container">
         <div className="page-header">
-          <h1>Teatro em Cartaz 🎭</h1>
-          <p>Peças e musicais nos palcos do Recife</p>
+          <h1>Palcos 🎭</h1>
+          <p>Teatro, shows e as melhores apresentações musicais do Recife</p>
         </div>
 
-        {teatroData.map(teatro => (
-          <article className="teatro-group cinema-group" key={teatro.name}>
-            <h2>{teatro.name}</h2>
-            <p style={{ color: 'var(--secondary-color)', marginBottom: 20, fontSize: '0.9rem' }}>
-              <i className="fas fa-map-marker-alt"></i> {teatro.location}
-            </p>
+        {/* SEÇÃO DE EVENTOS/SHOWS (ESTILO GRID) */}
+        <section className="grouped-category-section">
+          <h2 className="section-title">Shows e Eventos</h2>
+          <div className="events-grid">
+            {palcosEvents.length === 0 ? (
+              <p className="empty-state">Buscando novos shows... 🎸</p>
+            ) : (
+              palcosEvents.map(event => <EventCard key={event.id} event={event} />)
+            )}
+          </div>
+        </section>
 
-            {teatro.shows.map(show => (
-              <div className="show-listing movie-listing" key={show.title}>
-                <div className="show-poster movie-poster">
-                  <img src={show.poster} alt={show.title} />
-                </div>
-                <div className="show-details movie-details">
-                  <h3>
-                    {show.title}
-                    <span className={`rating-badge ${getRatingClass(show.rating)}`}>{show.rating}</span>
-                  </h3>
-                  <p className="genre">{show.genre}</p>
-                  <div className="session-times">
-                    <h4>Sessões</h4>
-                    <div className="session-list">
-                      {show.sessions.map((s, i) => (
-                        <button
-                          key={i}
-                          className="session-btn session-link"
-                          onClick={() => setModal({ teatroName: teatro.name, showTitle: show.title, session: s })}
-                        >
-                          {s.date} às {s.time} — {s.price}
-                        </button>
-                      ))}
+        {/* SEÇÃO DE TEATROS (ESTILO LISTAGEM POR LOCAL) */}
+        <section className="grouped-category-section" style={{ marginTop: '50px' }}>
+          <h2 className="section-title">Teatros em Cartaz</h2>
+          {teatroData.map(teatro => (
+            <article className="teatro-group cinema-group" key={teatro.name} style={{ marginTop: '20px' }}>
+              <h2>{teatro.name}</h2>
+              <p style={{ color: 'var(--secondary-color)', marginBottom: 20, fontSize: '0.9rem' }}>
+                <i className="fas fa-map-marker-alt"></i> {teatro.location}
+              </p>
+
+              {teatro.shows.map(show => (
+                <div className="show-listing movie-listing" key={show.title}>
+                  <div className="show-poster movie-poster">
+                    <img src={show.poster} alt={show.title} />
+                  </div>
+                  <div className="show-details movie-details">
+                    <h3>
+                      {show.title}
+                      <span className={`rating-badge ${getRatingClass(show.rating)}`}>{show.rating}</span>
+                    </h3>
+                    <p className="genre">{show.genre}</p>
+                    <div className="session-times">
+                      <h4>Sessões</h4>
+                      <div className="session-list">
+                        {show.sessions.map((s, i) => (
+                          <button
+                            key={i}
+                            className="session-btn session-link"
+                            onClick={() => setModal({ teatroName: teatro.name, showTitle: show.title, session: s })}
+                          >
+                            {s.date} às {s.time} — {s.price}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </article>
-        ))}
+              ))}
+            </article>
+          ))}
+        </section>
       </main>
 
       {modal && <ShowModal details={modal} onClose={() => setModal(null)} />}

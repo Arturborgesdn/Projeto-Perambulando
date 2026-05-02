@@ -169,19 +169,24 @@ app.post('/api/admin/eventos/process-bulk', async (req, res) => {
 
   try {
     const prompt = `
-      Extraia eventos deste texto e retorne um ARRAY JSON de objetos.
-      Se o texto estiver em português, traduza o nome do mês na data para o formato ISO.
-      Categorias: ["Palcos", "Telas", "Artes", "Rua", "Infantil"]
-      
+      Você é um assistente do site "Perambulando", um guia cultural de Recife.
+      Sua tarefa é extrair eventos do texto bruto fornecido e retornar um ARRAY de objetos JSON.
+
+      IMPORTANTE:
+      1. Converta a data para o formato ISO (ex: 2026-08-05T19:00:00Z).
+      2. Se não houver uma URL de imagem clara no texto, crie um campo "imageKeywords" com 3 palavras-chave em INGLÊS que descrevam o evento (ex: "classic cinema hitchcock" ou "live music concert").
+      3. Categorias permitidas: ["Palcos", "Telas", "Artes", "Rua", "Infantil"]
+
       Estrutura:
       [{
         "title": "...",
         "category": "...",
-        "date": "2026-08-05T19:00:00Z",
+        "date": "...",
         "location": "...",
         "description": "...",
         "price": "...",
-        "image": "...",
+        "image": "URL ou null",
+        "imageKeywords": "palavras em ingles para busca de foto",
         "instagramLink": "...",
         "ticketLink": "..."
       }]
@@ -201,6 +206,14 @@ app.post('/api/admin/eventos/process-bulk', async (req, res) => {
       let eventDate = new Date(event.date);
       if (isNaN(eventDate.getTime())) eventDate = new Date();
 
+      // GERADOR DE IMAGEM IA (Via Unsplash Source)
+      let finalImage = event.image;
+      if (!finalImage || finalImage === "null" || finalImage.length < 5) {
+        // Se a IA gerou keywords, usamos elas. Se não, geramos do título.
+        const keywords = event.imageKeywords || `${event.category} ${event.title}`.replace(/[^a-zA-Z ]/g, "");
+        finalImage = `https://source.unsplash.com/800x600/?${encodeURIComponent(keywords)}`;
+      }
+
       const created = await prisma.evento.create({
         data: {
           title: event.title || "Evento sem título",
@@ -209,7 +222,7 @@ app.post('/api/admin/eventos/process-bulk', async (req, res) => {
           location: event.location || "Recife",
           description: event.description || "",
           price: event.price || "Verificar",
-          image: event.image || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800",
+          image: finalImage,
           instagramLink: event.instagramLink || null,
           ticketLink: event.ticketLink || null,
           status: 'PENDENTE'
