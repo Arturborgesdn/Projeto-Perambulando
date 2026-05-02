@@ -18,17 +18,17 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/cinema" element={<Telas />} />
-        <Route path="/teatro" element={<Palcos />} />
+        <Route path="/cinema" element={<Cinema />} />
+        <Route path="/teatro" element={<Teatro />} />
         <Route path="/restaurantes" element={<Restaurantes />} />
-        
+
         {/* Novas rotas de categoria consolidadas */}
-        <Route path="/palcos" element={<Palcos />} />
-        <Route path="/telas" element={<Telas />} />
+        <Route path="/palcos" element={<Teatro />} />
+        <Route path="/telas" element={<Cinema />} />
         <Route path="/artes" element={<Artes />} />
         <Route path="/rua" element={<Rua />} />
         <Route path="/infantil" element={<Infantil />} />
-        
+
         {/* Aliases para compatibilidade */}
         <Route path="/shows" element={<Shows />} />
         <Route path="/exposicoes" element={<Exposicoes />} />

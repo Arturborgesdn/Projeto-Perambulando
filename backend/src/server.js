@@ -84,6 +84,147 @@ app.patch('/api/admin/eventos/:id/status', async (req, res) => {
   }
 });
 
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+// Configuração do Gemini
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const aiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+// Função auxiliar para tentar vários modelos da IA caso o padrão falhe (erro 404 comum em algumas regiões/chaves)
+async function getAIResponse(prompt) {
+  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-pro"];
+  let lastError = null;
+
+  for (const modelName of modelsToTry) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    } catch (err) {
+      console.error(`Falha com modelo ${modelName}:`, err.message);
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
+// Rota para processar texto bruto com IA e criar eventos pendentes
+app.post('/api/admin/eventos/process-bulk', async (req, res) => {
+  const { rawText } = req.body;
+  if (!rawText) return res.status(400).json({ error: 'Texto bruto é obrigatório' });
+
+  // Tentar um parser manual simples caso o texto já esteja formatado (como o exemplo do Hitchcock)
+  if (rawText.includes('title:') && rawText.includes('category:')) {
+    try {
+      const lines = rawText.split('\n');
+      const event = {};
+      lines.forEach(line => {
+        const index = line.indexOf(':');
+        if (index !== -1) {
+          const key = line.substring(0, index).trim().toLowerCase();
+          const val = line.substring(index + 1).trim();
+          if (key === 'title') event.title = val;
+          if (key === 'category') event.category = val;
+          if (key === 'date') event.date = val;
+          if (key === 'location') event.location = val;
+          if (key === 'description') event.description = val;
+          if (key === 'image') event.image = val;
+          if (key === 'instagramlink') event.instagramLink = val;
+          if (key === 'ticketlink') event.ticketLink = val;
+        }
+      });
+
+      if (event.title) {
+        const catMap = { 'arte': 'Artes', 'cinema': 'Telas', 'show': 'Palcos', 'teatro': 'Palcos', 'rua': 'Rua', 'infantil': 'Infantil' };
+        const category = catMap[event.category?.toLowerCase()] || 'Artes';
+        
+        // Conversão básica de data manual (PT -> EN) para evitar Invalid Date
+        let dateStr = event.date || "";
+        const months = { 'janeiro':'January','fevereiro':'February','março':'March','abril':'April','maio':'May','junho':'June','julho':'July','agosto':'August','setembro':'September','outubro':'October','novembro':'November','dezembro':'December' };
+        Object.keys(months).forEach(m => { dateStr = dateStr.toLowerCase().replace(m, months[m]); });
+        
+        let finalDate = new Date(dateStr);
+        if (isNaN(finalDate.getTime())) finalDate = new Date();
+
+        const created = await prisma.evento.create({
+          data: {
+            title: event.title,
+            category: category,
+            date: finalDate,
+            location: event.location || "Recife",
+            description: event.description || "",
+            price: "Verificar no link",
+            image: event.image || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800",
+            instagramLink: event.instagramLink || null,
+            ticketLink: event.ticketLink || null,
+            status: 'PENDENTE'
+          }
+        });
+        return res.json({ message: 'Evento detectado e processado via parser inteligente!', events: [created] });
+      }
+    } catch (e) {
+      console.log("Parser manual falhou, tentando IA...", e.message);
+    }
+  }
+
+  try {
+    const prompt = `
+      Extraia eventos deste texto e retorne um ARRAY JSON de objetos.
+      Se o texto estiver em português, traduza o nome do mês na data para o formato ISO.
+      Categorias: ["Palcos", "Telas", "Artes", "Rua", "Infantil"]
+      
+      Estrutura:
+      [{
+        "title": "...",
+        "category": "...",
+        "date": "2026-08-05T19:00:00Z",
+        "location": "...",
+        "description": "...",
+        "price": "...",
+        "image": "...",
+        "instagramLink": "...",
+        "ticketLink": "..."
+      }]
+
+      TEXTO: ${rawText}
+    `;
+
+    const responseText = await getAIResponse(prompt);
+    const startIndex = responseText.indexOf('[');
+    const endIndex = responseText.lastIndexOf(']') + 1;
+    if (startIndex === -1 || endIndex === 0) throw new Error("IA não retornou JSON");
+
+    const events = JSON.parse(responseText.substring(startIndex, endIndex));
+    const createdEvents = [];
+
+    for (const event of events) {
+      let eventDate = new Date(event.date);
+      if (isNaN(eventDate.getTime())) eventDate = new Date();
+
+      const created = await prisma.evento.create({
+        data: {
+          title: event.title || "Evento sem título",
+          category: event.category || "Artes",
+          date: eventDate,
+          location: event.location || "Recife",
+          description: event.description || "",
+          price: event.price || "Verificar",
+          image: event.image || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800",
+          instagramLink: event.instagramLink || null,
+          ticketLink: event.ticketLink || null,
+          status: 'PENDENTE'
+        }
+      });
+      createdEvents.push(created);
+    }
+
+    res.json({ message: `Sucesso! ${createdEvents.length} eventos processados.`, events: createdEvents });
+  } catch (error) {
+    console.error("Erro Final:", error.message);
+    res.status(500).json({ error: 'A IA está temporariamente indisponível ou o texto está muito confuso. Tente simplificar.' });
+  }
+});
+
 // --- ROTAS DE CLIENTES ---
 
 app.post('/api/clientes', async (req, res) => {

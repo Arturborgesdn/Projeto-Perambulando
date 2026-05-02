@@ -120,21 +120,29 @@
 }
 
 .btn-action.edit {
-    background: var(--accent);
-    color: white;
+    background: var(--bg-paper);
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-action.edit:hover {
-    background: var(--accent-dark);
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .btn-action.accept {
-    background: var(--success);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
+    box-shadow: 0 4px 12px rgba(56, 102, 65, 0.2);
 }
 
 .btn-action.accept:hover {
-    background: var(--success-dark);
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(56, 102, 65, 0.3);
 }
 
 .btn-action.reject {

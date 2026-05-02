@@ -79,6 +79,11 @@ export default function EventCard({ event, isSmall }) {
         </Link>
         
         <h3 style={{ margin: '5px 0' }}>{event.title}</h3>
+
+        <p className="tech-info" style={{ marginBottom: '4px' }}>
+          <span className="pin-marker"></span>
+          {event.location}
+        </p>
         
         {isFeira ? (
           <>
@@ -87,35 +92,31 @@ export default function EventCard({ event, isSmall }) {
           </>
         ) : (
           <>
-            <p className="tech-info"><i className="far fa-calendar-alt"></i> {formattedDate} - {formattedTime}</p>
+            <p className="tech-info"><i className="far fa-calendar-alt"></i> {formattedDate}</p>
+            <p className="tech-info"><i className="far fa-clock"></i> {formattedTime}</p>
           </>
-        )}
-        
-        <p className="tech-info">
-          <span className="pin-marker"></span>
-          {event.location}
-        </p>
-
-        {isFeira && event.feiraType && (
-          <span className="feira-tag" style={{ marginTop: '5px', display: 'inline-block' }}>
-            {event.feiraType}
-          </span>
         )}
       </div>
 
-      <div className="event-actions-bar" style={{ padding: '10px 0 0', marginTop: 'auto', borderTop: '1px solid var(--border)', display: 'flex', gap: '8px' }}>
+      <div className="event-actions-bar" style={{ padding: '10px 0 0', marginTop: 'auto', borderTop: '1px solid var(--border)', display: 'flex', gap: '8px', alignItems: 'center' }}>
         <button 
           className="action-icon-btn schedule-mini btn-add-schedule" 
           onClick={addToSchedule} 
           title="Adicionar à Programação" 
-          style={{ flex: 1, padding: '8px', fontSize: '0.75rem' }}
+          style={{ 
+            flex: isSmall ? 'none' : 1, 
+            padding: isSmall ? '0' : '8px', 
+            fontSize: isSmall ? '1.1rem' : '0.75rem',
+            width: isSmall ? '38px' : 'auto',
+            height: isSmall ? '38px' : 'auto'
+          }}
         >
-          <i className="far fa-calendar-plus"></i> Programar
+          <i className="far fa-calendar-plus"></i> {!isSmall && " Programar"}
         </button>
         <Link 
           to={event.id && !String(event.id).startsWith('feira-') && !String(event.id).startsWith('cinema-group-') ? `/evento/${String(event.id).replace('event-', '').replace('mock-', '')}` : categoryLink}
           className="action-icon-btn ticket" 
-          style={{ flex: 1, padding: '8px', fontSize: '0.75rem', textDecoration: 'none', textAlign: 'center' }}
+          style={{ flex: 1, padding: '8px', fontSize: '0.75rem', textDecoration: 'none', textAlign: 'center', height: isSmall ? '38px' : 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           onClick={(e) => e.stopPropagation()}
         >
           <i className="fas fa-info-circle"></i> Saiba Mais

@@ -8,6 +8,8 @@ export default function Moderacao() {
   const [loading, setLoading] = useState(true)
   const [robotLoading, setRobotLoading] = useState(false)
   const [editingEvent, setEditingEvent] = useState(null)
+  const [rawText, setRawText] = useState('')
+  const [bulkLoading, setBulkLoading] = useState(false)
 
   useEffect(() => {
     fetchPendentes()
@@ -22,6 +24,31 @@ export default function Moderacao() {
       console.error('Erro ao buscar pendentes:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleBulkProcess() {
+    if (!rawText.trim()) return alert('Cole o texto do evento primeiro!');
+    
+    setBulkLoading(true)
+    try {
+      const response = await fetch('http://127.0.0.1:3001/api/admin/eventos/process-bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rawText })
+      })
+      const data = await response.json()
+      if (response.ok) {
+        alert(data.message)
+        setRawText('')
+        fetchPendentes()
+      } else {
+        alert('Erro: ' + (data.error || 'Falha ao processar'))
+      }
+    } catch (error) {
+      alert('Erro ao conectar com o servidor.')
+    } finally {
+      setBulkLoading(false)
     }
   }
 
@@ -98,6 +125,33 @@ export default function Moderacao() {
             {robotLoading ? '🤖 Buscando...' : '🤖 Rodar Robô'}
           </button>
         </div>
+
+        {/* ÁREA DE PROCESSAMENTO EM MASSA COM IA */}
+        <section className="bulk-ai-section" style={{ background: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid var(--border)', marginBottom: '30px', boxShadow: 'var(--shadow-sm)' }}>
+          <h3 style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <i className="fas fa-magic" style={{ color: 'var(--accent-orange)' }}></i> 
+            Cadastrar em Massa com IA
+          </h3>
+          <p style={{ fontSize: '0.88rem', color: 'var(--muted)', marginBottom: '15px' }}>
+            Cole aqui textos de notícias, posts de Instagram ou listas de eventos. A IA vai extrair as informações e criar os eventos para sua revisão.
+          </p>
+          <textarea 
+            className="form-textarea" 
+            placeholder="Ex: Show de Alceu Valença dia 20 no Marco Zero as 21h..." 
+            rows="5"
+            value={rawText}
+            onChange={(e) => setRawText(e.target.value)}
+            style={{ marginBottom: '15px', fontSize: '0.9rem' }}
+          ></textarea>
+          <button 
+            className="btn-submit" 
+            onClick={handleBulkProcess} 
+            disabled={bulkLoading}
+            style={{ width: 'auto', padding: '12px 24px' }}
+          >
+            {bulkLoading ? '🧠 Processando com IA...' : '⚡ Processar e Criar Eventos'}
+          </button>
+        </section>
 
         {loading ? <p>Carregando planilha...</p> : pendentes.length === 0 ? (
           <div className="empty-state">
