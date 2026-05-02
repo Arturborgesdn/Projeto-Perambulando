@@ -7,10 +7,51 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
 
+const geoService = require('./services/geoService');
+
 app.use(cors());
 app.use(express.json());
 
 // --- ROTAS DE EVENTOS (PÚBLICAS) ---
+
+// Buscar restaurantes próximos a um evento
+app.get('/api/eventos/:id/proximidades', async (req, res) => {
+  const { id } = req.params;
+  const { radius } = req.query; // Raio opcional em metros
+
+  try {
+    const evento = await prisma.evento.findUnique({
+      where: { id: parseInt(id) }
+    });
+
+    if (!evento) {
+      return res.status(404).json({ error: 'Evento não encontrado' });
+    }
+
+    // 1. Obter coordenadas do local do evento
+    const coords = await geoService.getCoordinates(evento.location);
+    
+    if (!coords) {
+      return res.status(404).json({ error: 'Não foi possível geolocalizar o endereço do evento' });
+    }
+
+    // 2. Buscar restaurantes próximos (padrão 1km)
+    const restaurantes = await geoService.getNearbyRestaurants(coords.lat, coords.lon, radius || 1000);
+
+    res.json({
+      evento: {
+        id: evento.id,
+        title: evento.title,
+        location: evento.location,
+        coords
+      },
+      restaurantes
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao buscar proximidades' });
+  }
+});
 
 // Listar eventos aprovados (Home)
 app.get('/api/eventos', async (req, res) => {

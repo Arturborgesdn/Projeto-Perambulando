@@ -57,6 +57,10 @@ export default function EventCard({ event, isSmall }) {
     setShowImage(!showImage);
   };
 
+  const eventLink = event.id && !String(event.id).startsWith('feira-') && !String(event.id).startsWith('cinema-group-') 
+    ? `/evento/${String(event.id).replace('event-', '').replace('mock-', '')}` 
+    : categoryLink;
+
   return (
     <div 
       className={`feira-card ${isSmall ? 'event-card-small' : ''}`} 
@@ -78,7 +82,9 @@ export default function EventCard({ event, isSmall }) {
           {event.type}
         </Link>
         
-        <h3 style={{ margin: '5px 0' }}>{event.title}</h3>
+        <Link to={eventLink} style={{ textDecoration: 'none', color: 'inherit' }} onClick={(e) => e.stopPropagation()}>
+          <h3 style={{ margin: '5px 0' }}>{event.title}</h3>
+        </Link>
 
         <p className="tech-info" style={{ marginBottom: '4px' }}>
           <span className="pin-marker"></span>
@@ -121,7 +127,29 @@ export default function EventCard({ event, isSmall }) {
         >
           <i className="fas fa-info-circle"></i> Saiba Mais
         </Link>
-      </div>
+        {!isSmall && (
+          <Link 
+            to={`/evento/${String(event.id).replace('event-', '').replace('mock-', '')}`}
+            className="action-icon-btn" 
+            style={{ 
+              background: 'var(--secondary)', 
+              color: 'white', 
+              padding: '8px', 
+              fontSize: '0.75rem', 
+              borderRadius: 'var(--radius-pill)', 
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '4px'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <i className="fas fa-map-marked-alt"></i> Perto
+          </Link>
+        )}
+        </div>
+
       
       <div style={{ fontSize: '0.7rem', color: 'var(--muted)', textAlign: 'right', marginTop: '5px' }}>
         {showImage ? 'Clique para ocultar imagem' : 'Clique para ver imagem'}

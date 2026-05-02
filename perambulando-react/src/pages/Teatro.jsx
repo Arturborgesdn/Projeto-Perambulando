@@ -76,7 +76,7 @@ export default function Teatro() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const response = await fetch('http://127.0.0.1:3001/api/eventos')
+        const response = await fetch('http://localhost:3001/api/eventos')
         const data = await response.json()
         setEventsFromApi(data)
       } catch (error) {

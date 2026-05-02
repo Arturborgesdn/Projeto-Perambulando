@@ -17,7 +17,7 @@ export default function Moderacao() {
 
   async function fetchPendentes() {
     try {
-      const response = await fetch('http://127.0.0.1:3001/api/admin/eventos/pendentes')
+      const response = await fetch('http://localhost:3001/api/admin/eventos/pendentes')
       const data = await response.json()
       setPendentes(data)
     } catch (error) {
@@ -32,7 +32,7 @@ export default function Moderacao() {
     
     setBulkLoading(true)
     try {
-      const response = await fetch('http://127.0.0.1:3001/api/admin/eventos/process-bulk', {
+      const response = await fetch('http://localhost:3001/api/admin/eventos/process-bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rawText })
@@ -55,7 +55,7 @@ export default function Moderacao() {
   async function runRobot() {
     setRobotLoading(true)
     try {
-      const response = await fetch('http://127.0.0.1:3001/api/admin/robot/run', { method: 'POST' })
+      const response = await fetch('http://localhost:3001/api/admin/robot/run', { method: 'POST' })
       const data = await response.json()
       alert(data.message)
       setTimeout(fetchPendentes, 3000)
@@ -70,7 +70,7 @@ export default function Moderacao() {
     const payload = updatedData ? { ...updatedData, status: novoStatus } : { status: novoStatus };
     
     try {
-      const response = await fetch(`http://127.0.0.1:3001/api/admin/eventos/${id}/status`, {
+      const response = await fetch(`http://localhost:3001/api/admin/eventos/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
