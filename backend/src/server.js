@@ -1,127 +1,194 @@
-const express = require('express');
-const cors = require('cors');
-const { PrismaClient } = require('@prisma/client');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const { PrismaClient } = require("@prisma/client");
+require("dotenv").config();
 
 const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
 
-const geoService = require('./services/geoService');
+const geoService = require("./services/geoService");
 
 app.use(cors());
 app.use(express.json());
 
 // --- ROTAS DE EVENTOS (PÚBLICAS) ---
 
-// Buscar restaurantes próximos a um evento
-app.get('/api/eventos/:id/proximidades', async (req, res) => {
+// Buscar restaurantes próximos a um evento por ID
+app.get("/api/eventos/:id/proximidades", async (req, res) => {
   const { id } = req.params;
-  const { radius } = req.query; // Raio opcional em metros
+  const { radius, location } = req.query; // Raio opcional em metros, ou endereço direto como fallback
 
   try {
-    const evento = await prisma.evento.findUnique({
-      where: { id: parseInt(id) }
-    });
+    let coords = null;
+    let eventInfo = null;
 
-    if (!evento) {
-      return res.status(404).json({ error: 'Evento não encontrado' });
+    // Tenta buscar no banco primeiro
+    try {
+      const evento = await prisma.evento.findUnique({
+        where: { id: parseInt(id) },
+      });
+
+      if (evento) {
+        eventInfo = {
+          id: evento.id,
+          title: evento.title,
+          location: evento.location,
+        };
+        coords = await geoService.getCoordinates(evento.location);
+      }
+    } catch (dbError) {
+      console.warn("Evento não encontrado no banco:", dbError.message);
     }
 
-    // 1. Obter coordenadas do local do evento
-    const coords = await geoService.getCoordinates(evento.location);
-    
+    // Se não encontrou no banco, usa o endereço fornecido como query param
+    if (!coords && location) {
+      coords = await geoService.getCoordinates(location);
+      eventInfo = { location };
+    }
+
     if (!coords) {
-      return res.status(404).json({ error: 'Não foi possível geolocalizar o endereço do evento' });
+      return res.status(404).json({
+        error:
+          'Não foi possível geolocalizar o endereço. Tente fornecer um endereço no parâmetro "location".',
+        help: "Use: /api/eventos/:id/proximidades?location=seu+endereco",
+      });
     }
 
     // 2. Buscar restaurantes próximos (padrão 1km)
-    const restaurantes = await geoService.getNearbyRestaurants(coords.lat, coords.lon, radius || 1000);
+    const restaurantes = await geoService.getNearbyRestaurants(
+      coords.lat,
+      coords.lon,
+      parseInt(radius) || 1000,
+    );
 
     res.json({
-      evento: {
-        id: evento.id,
-        title: evento.title,
-        location: evento.location,
-        coords
-      },
-      restaurantes
+      sucesso: true,
+      evento: eventInfo,
+      coords,
+      proximidades: restaurantes,
+      total: restaurantes.length,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao buscar proximidades' });
+    console.error("Erro ao buscar proximidades:", error);
+    res.status(500).json({
+      error: "Erro interno ao buscar proximidades",
+      mensagem: error.message,
+    });
+  }
+});
+
+// Buscar estabelecimentos por endereço direto
+app.get("/api/proximidades", async (req, res) => {
+  const { location, radius } = req.query;
+
+  if (!location) {
+    return res.status(400).json({
+      error: "Localização é obrigatória",
+      exemplo: "/api/proximidades?location=Rua+das+Flores+Recife",
+    });
+  }
+
+  try {
+    const coords = await geoService.getCoordinates(location);
+    if (!coords) {
+      return res.status(404).json({
+        error: "Não foi possível geolocalizar o endereço fornecido",
+        tentativa: location,
+      });
+    }
+
+    const restaurantes = await geoService.getNearbyRestaurants(
+      coords.lat,
+      coords.lon,
+      parseInt(radius) || 1000,
+    );
+
+    res.json({
+      sucesso: true,
+      location,
+      coords,
+      proximidades: restaurantes,
+      total: restaurantes.length,
+    });
+  } catch (error) {
+    console.error("Erro ao buscar proximidades:", error);
+    res.status(500).json({
+      error: "Erro interno ao buscar proximidades",
+      mensagem: error.message,
+    });
   }
 });
 
 // Listar eventos aprovados (Home)
-app.get('/api/eventos', async (req, res) => {
+app.get("/api/eventos", async (req, res) => {
   try {
     const eventos = await prisma.evento.findMany({
-      where: { status: 'APROVADO' },
-      orderBy: { date: 'asc' }
+      where: { status: "APROVADO" },
+      orderBy: { date: "asc" },
     });
     res.json(eventos);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar eventos' });
+    res.status(500).json({ error: "Erro ao buscar eventos" });
   }
 });
 
 // Criar novo evento (Vem como PENDENTE por padrão)
-app.post('/api/eventos', async (req, res) => {
+app.post("/api/eventos", async (req, res) => {
   try {
     const novoEvento = await prisma.evento.create({
       data: {
         ...req.body,
-        status: 'PENDENTE' // Garante que comece pendente
+        status: "PENDENTE", // Garante que comece pendente
       },
     });
     res.status(201).json(novoEvento);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao criar evento' });
+    res.status(500).json({ error: "Erro ao criar evento" });
   }
 });
 
 // --- ROTAS DE ADMINISTRAÇÃO (MODERAÇÃO) ---
 
 // Listar eventos pendentes
-app.get('/api/admin/eventos/pendentes', async (req, res) => {
+app.get("/api/admin/eventos/pendentes", async (req, res) => {
   try {
     const pendentes = await prisma.evento.findMany({
-      where: { status: 'PENDENTE' },
-      orderBy: { createdAt: 'desc' }
+      where: { status: "PENDENTE" },
+      orderBy: { createdAt: "desc" },
     });
     res.json(pendentes);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar pendentes' });
+    res.status(500).json({ error: "Erro ao buscar pendentes" });
   }
 });
 
 // Alterar status e dados de um evento (Aprovar/Rejeitar/Editar)
-app.patch('/api/admin/eventos/:id/status', async (req, res) => {
+app.patch("/api/admin/eventos/:id/status", async (req, res) => {
   const { id } = req.params;
-  const { status, ...eventData } = req.body; 
-  
+  const { status, ...eventData } = req.body;
+
   try {
-    if (status === 'REJEITADO') {
+    if (status === "REJEITADO") {
       // Se for rejeitado, exclui permanentemente do banco
       await prisma.evento.delete({
-        where: { id: parseInt(id) }
+        where: { id: parseInt(id) },
       });
-      return res.json({ message: 'Evento excluído com sucesso' });
+      return res.json({ message: "Evento excluído com sucesso" });
     }
 
     // Se for aprovado ou editado, atualiza normalmente
     const atualizado = await prisma.evento.update({
       where: { id: parseInt(id) },
-      data: { 
+      data: {
         ...eventData,
-        status 
-      }
+        status,
+      },
     });
     res.json(atualizado);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Erro ao processar ação no evento' });
+    res.status(500).json({ error: "Erro ao processar ação no evento" });
   }
 });
 
@@ -133,7 +200,11 @@ const aiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Função auxiliar para tentar vários modelos da IA caso o padrão falhe (erro 404 comum em algumas regiões/chaves)
 async function getAIResponse(prompt) {
-  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-pro"];
+  const modelsToTry = [
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-latest",
+    "gemini-pro",
+  ];
   let lastError = null;
 
   for (const modelName of modelsToTry) {
@@ -150,40 +221,63 @@ async function getAIResponse(prompt) {
 }
 
 // Rota para processar texto bruto com IA e criar eventos pendentes
-app.post('/api/admin/eventos/process-bulk', async (req, res) => {
+app.post("/api/admin/eventos/process-bulk", async (req, res) => {
   const { rawText } = req.body;
-  if (!rawText) return res.status(400).json({ error: 'Texto bruto é obrigatório' });
+  if (!rawText)
+    return res.status(400).json({ error: "Texto bruto é obrigatório" });
 
   // Tentar um parser manual simples caso o texto já esteja formatado (como o exemplo do Hitchcock)
-  if (rawText.includes('title:') && rawText.includes('category:')) {
+  if (rawText.includes("title:") && rawText.includes("category:")) {
     try {
-      const lines = rawText.split('\n');
+      const lines = rawText.split("\n");
       const event = {};
-      lines.forEach(line => {
-        const index = line.indexOf(':');
+      lines.forEach((line) => {
+        const index = line.indexOf(":");
         if (index !== -1) {
           const key = line.substring(0, index).trim().toLowerCase();
           const val = line.substring(index + 1).trim();
-          if (key === 'title') event.title = val;
-          if (key === 'category') event.category = val;
-          if (key === 'date') event.date = val;
-          if (key === 'location') event.location = val;
-          if (key === 'description') event.description = val;
-          if (key === 'image') event.image = val;
-          if (key === 'instagramlink') event.instagramLink = val;
-          if (key === 'ticketlink') event.ticketLink = val;
+          if (key === "title") event.title = val;
+          if (key === "category") event.category = val;
+          if (key === "date") event.date = val;
+          if (key === "location") event.location = val;
+          if (key === "description") event.description = val;
+          if (key === "image") event.image = val;
+          if (key === "instagramlink") event.instagramLink = val;
+          if (key === "ticketlink") event.ticketLink = val;
         }
       });
 
       if (event.title) {
-        const catMap = { 'arte': 'Artes', 'cinema': 'Telas', 'show': 'Palcos', 'teatro': 'Palcos', 'rua': 'Rua', 'infantil': 'Infantil' };
-        const category = catMap[event.category?.toLowerCase()] || 'Artes';
-        
+        const catMap = {
+          arte: "Artes",
+          cinema: "Telas",
+          show: "Palcos",
+          teatro: "Palcos",
+          rua: "Rua",
+          infantil: "Infantil",
+        };
+        const category = catMap[event.category?.toLowerCase()] || "Artes";
+
         // Conversão básica de data manual (PT -> EN) para evitar Invalid Date
         let dateStr = event.date || "";
-        const months = { 'janeiro':'January','fevereiro':'February','março':'March','abril':'April','maio':'May','junho':'June','julho':'July','agosto':'August','setembro':'September','outubro':'October','novembro':'November','dezembro':'December' };
-        Object.keys(months).forEach(m => { dateStr = dateStr.toLowerCase().replace(m, months[m]); });
-        
+        const months = {
+          janeiro: "January",
+          fevereiro: "February",
+          março: "March",
+          abril: "April",
+          maio: "May",
+          junho: "June",
+          julho: "July",
+          agosto: "August",
+          setembro: "September",
+          outubro: "October",
+          novembro: "November",
+          dezembro: "December",
+        };
+        Object.keys(months).forEach((m) => {
+          dateStr = dateStr.toLowerCase().replace(m, months[m]);
+        });
+
         let finalDate = new Date(dateStr);
         if (isNaN(finalDate.getTime())) finalDate = new Date();
 
@@ -195,13 +289,18 @@ app.post('/api/admin/eventos/process-bulk', async (req, res) => {
             location: event.location || "Recife",
             description: event.description || "",
             price: "Verificar no link",
-            image: event.image || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800",
+            image:
+              event.image ||
+              "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=800",
             instagramLink: event.instagramLink || null,
             ticketLink: event.ticketLink || null,
-            status: 'PENDENTE'
-          }
+            status: "PENDENTE",
+          },
         });
-        return res.json({ message: 'Evento detectado e processado via parser inteligente!', events: [created] });
+        return res.json({
+          message: "Evento detectado e processado via parser inteligente!",
+          events: [created],
+        });
       }
     } catch (e) {
       console.log("Parser manual falhou, tentando IA...", e.message);
@@ -236,9 +335,10 @@ app.post('/api/admin/eventos/process-bulk', async (req, res) => {
     `;
 
     const responseText = await getAIResponse(prompt);
-    const startIndex = responseText.indexOf('[');
-    const endIndex = responseText.lastIndexOf(']') + 1;
-    if (startIndex === -1 || endIndex === 0) throw new Error("IA não retornou JSON");
+    const startIndex = responseText.indexOf("[");
+    const endIndex = responseText.lastIndexOf("]") + 1;
+    if (startIndex === -1 || endIndex === 0)
+      throw new Error("IA não retornou JSON");
 
     const events = JSON.parse(responseText.substring(startIndex, endIndex));
     const createdEvents = [];
@@ -251,7 +351,9 @@ app.post('/api/admin/eventos/process-bulk', async (req, res) => {
       let finalImage = event.image;
       if (!finalImage || finalImage === "null" || finalImage.length < 5) {
         // Se a IA gerou keywords, usamos elas. Se não, geramos do título.
-        const keywords = event.imageKeywords || `${event.category} ${event.title}`.replace(/[^a-zA-Z ]/g, "");
+        const keywords =
+          event.imageKeywords ||
+          `${event.category} ${event.title}`.replace(/[^a-zA-Z ]/g, "");
         finalImage = `https://source.unsplash.com/800x600/?${encodeURIComponent(keywords)}`;
       }
 
@@ -266,60 +368,78 @@ app.post('/api/admin/eventos/process-bulk', async (req, res) => {
           image: finalImage,
           instagramLink: event.instagramLink || null,
           ticketLink: event.ticketLink || null,
-          status: 'PENDENTE'
-        }
+          status: "PENDENTE",
+        },
       });
       createdEvents.push(created);
     }
 
-    res.json({ message: `Sucesso! ${createdEvents.length} eventos processados.`, events: createdEvents });
+    res.json({
+      message: `Sucesso! ${createdEvents.length} eventos processados.`,
+      events: createdEvents,
+    });
   } catch (error) {
     console.error("Erro Final:", error.message);
-    res.status(500).json({ error: 'A IA está temporariamente indisponível ou o texto está muito confuso. Tente simplificar.' });
+    res
+      .status(500)
+      .json({
+        error:
+          "A IA está temporariamente indisponível ou o texto está muito confuso. Tente simplificar.",
+      });
   }
 });
 
 // --- ROTAS DE CLIENTES ---
 
-app.post('/api/clientes', async (req, res) => {
+app.post("/api/clientes", async (req, res) => {
   const { nome, email, senha } = req.body;
   try {
     const novoCliente = await prisma.cliente.create({
       data: { nome, email, senha },
     });
-    res.status(201).json({ id: novoCliente.id, nome: novoCliente.nome, email: novoCliente.email });
+    res
+      .status(201)
+      .json({
+        id: novoCliente.id,
+        nome: novoCliente.nome,
+        email: novoCliente.email,
+      });
   } catch (error) {
-    if (error.code === 'P2002') return res.status(400).json({ error: 'Email já cadastrado' });
-    res.status(500).json({ error: 'Erro ao cadastrar cliente' });
+    if (error.code === "P2002")
+      return res.status(400).json({ error: "Email já cadastrado" });
+    res.status(500).json({ error: "Erro ao cadastrar cliente" });
   }
 });
 
-app.post('/api/login', async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { email, senha } = req.body;
   try {
     const user = await prisma.cliente.findUnique({ where: { email } });
     if (user && user.senha === senha) {
       res.json({ id: user.id, nome: user.nome, email: user.email });
     } else {
-      res.status(401).json({ error: 'E-mail ou senha incorretos' });
+      res.status(401).json({ error: "E-mail ou senha incorretos" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao realizar login' });
+    res.status(500).json({ error: "Erro ao realizar login" });
   }
 });
 
-const runScraper = require('./robot');
+const runScraper = require("./robot");
 
 // ... outros middlewares ...
 
 // Rota para disparar o Robô manualmente
-app.post('/api/admin/robot/run', async (req, res) => {
+app.post("/api/admin/robot/run", async (req, res) => {
   try {
     // Roda em segundo plano para não travar a resposta
     runScraper();
-    res.json({ message: 'Robô iniciado! Verifique o painel de moderação em alguns instantes.' });
+    res.json({
+      message:
+        "Robô iniciado! Verifique o painel de moderação em alguns instantes.",
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Falha ao iniciar o robô' });
+    res.status(500).json({ error: "Falha ao iniciar o robô" });
   }
 });
 

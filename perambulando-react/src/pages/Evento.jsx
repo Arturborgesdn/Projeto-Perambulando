@@ -156,27 +156,74 @@ export default function Evento() {
   async function fetchNearby() {
     setLoadingNearby(true);
     setShowNearbyModal(true);
+
     try {
+      let response = null;
       const cleanId = String(event.id)
         .replace("event-", "")
         .replace("mock-", "")
         .replace("feira-", "");
-      const response = await fetch(
-        `http://localhost:3001/api/eventos/${cleanId}/proximidades`,
-      );
-      if (response.ok) {
-        const data = await response.json();
 
-        // Adicionar notas e preços aleatórios se não existirem
-        const enhancedRestaurants = data.restaurantes.map((r) => ({
-          ...r,
-          rating: r.rating || Math.floor(Math.random() * 5) + 1, // 1 a 5
-          price: r.price_level || Math.floor(Math.random() * 5) + 1, // 1 a 5
-        }));
+      // Se o evento é do banco de dados (API), tenta buscar por ID primeiro
+      if (event.type === "api") {
+        try {
+          response = await fetch(
+            `http://localhost:3001/api/eventos/${cleanId}/proximidades`,
+          );
 
-        setNearbyRestaurants(enhancedRestaurants);
+          if (response.ok) {
+            const data = await response.json();
+            const proximidades = data.proximidades || data.restaurantes || [];
+
+            const enhancedRestaurants = proximidades.map((r) => ({
+              ...r,
+              rating: r.rating || Math.floor(Math.random() * 5) + 1,
+              price: r.price_level || Math.floor(Math.random() * 5) + 1,
+              cuisine: r.cuisine || r.type || "Vários",
+            }));
+
+            setNearbyRestaurants(enhancedRestaurants);
+            setLoadingNearby(false);
+            return;
+          }
+        } catch (error) {
+          console.warn("Erro ao buscar por ID, tentando por endereço:", error);
+        }
+      }
+
+      // Fallback: busca por endereço direto (funciona para mock, feira ou quando ID falha)
+      if (event.location) {
+        const searchParams = new URLSearchParams({
+          location: event.location,
+          radius: 1000,
+        });
+
+        response = await fetch(
+          `http://localhost:3001/api/proximidades?${searchParams}`,
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const proximidades = data.proximidades || [];
+
+          const enhancedRestaurants = proximidades.map((r) => ({
+            ...r,
+            rating: r.rating || Math.floor(Math.random() * 5) + 1,
+            price: r.price_level || Math.floor(Math.random() * 5) + 1,
+            cuisine: r.cuisine || r.type || "Vários",
+          }));
+
+          setNearbyRestaurants(enhancedRestaurants);
+        } else {
+          console.warn(
+            "API retornou erro:",
+            response.status,
+            response.statusText,
+          );
+          setNearbyRestaurants([]);
+        }
       } else {
-        // Fallback para quando o evento não está no banco (mock) ou erro na API
+        console.warn("Evento sem localização definida");
         setNearbyRestaurants([]);
       }
     } catch (error) {
