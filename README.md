@@ -70,6 +70,14 @@ Fortalecer a cena cultural do Recife conectando pessoas, eventos e espaços — 
 
 ---
 
+## IAs Perambulantes...
+
+O Perambulando ele tem um auxílio de uma IA própria que ajuda o administrador a adicionar novos eventos e personalizá-los.
+
+A IA pega, via API, uma busca no google search, agrupa tudo, refina e manda para uma revisão humana.
+
+Isso ajuda a aumentar a produtividade do gerenciador e facilita na manutenção da página.
+
 ## Como rodar o projeto
 
 ```powershell
