@@ -92,6 +92,8 @@ cd backend
 # Inicie o servidor de desenvolvimento
 npm run dev
 
+```
+
 Em um novo terminal : 
 
 ```powershell
@@ -100,6 +102,8 @@ cd backend
 
 # Inicie o servidor de desenvolvimento
 npx prisma studio (DB local)
+
+```
 
 Acesse em: [http://localhost:5173](http://localhost:5173)
 
