@@ -8,7 +8,9 @@
 
 O Perambulando é uma plataforma criada para quem ama o Recife e quer aproveitar tudo que a cidade tem de melhor — sem complicação, sem precisar ficar garimpando informação em mil lugares diferentes.
 
-A ideia é simples: você abre o Perambulando e descobre o que está acontecendo na cidade hoje, amanhã ou no fim de semana. Shows, peças de teatro, exposições, feiras de artesanato, filmes em cartaz, restaurantes, eventos infantis e muito mais — tudo reunido, organizado e fácil de encontrar.
+A ideia é simples: você abre o Perambulando e descobre o que está acontecendo na cidade hoje, amanhã ou no fim de semana. Shows, peças de teatro, exposições, feiras de artesanato, filmes em cartaz, restaurantes, eventos infantis e muito mais — tudo reunido, organizado e fácil de encontrar.Além disso, a vantagem do perambulando é que você pode divulgar seu evento gratuitamente, procurar por lugares perto de eventos para comer e compartilhar roteiros com seus amigos!
+
+O Perambulando sugiu de uma dor : A dor de saber que ocorreu um evento massa e você não ficou sabendo que ia ocorrer.
 
 ---
 
@@ -39,9 +41,16 @@ No Perambulando você não precisa abrir o site do cinema, depois o do teatro, d
 ### Contrução de roteiros personalizados
 No Perambulando o usuário pode montar a sua programação personalizada e compartilhar com amigos familiares
 
+### Compartilhamento com amigos
+No Perambulando você pode compartilhar o seu roteiro para juntar a galera e todo mundo ir junto!
+
+### O que há por perto?
+A vontade de comer após qualquer evento é real e sempre acontece com todo mundo. Pensando nisso, o perambulando mostra locais pertos desse evento que você pode visitar depois. 
+
 ---
 
 ## Para quem é o Perambulando?
+**Para todo mundo que gosta de sair de casa** - A facilidade encontra a vontade de sair de casa e resultam em organização e vontade de se divertir.
 
 **Para o recifense que quer curtir a cidade** — que trabalha a semana toda e no fim de semana quer saber onde tem algo bom acontecendo, sem gastar horas pesquisando.
 
@@ -63,7 +72,7 @@ Fortalecer a cena cultural do Recife conectando pessoas, eventos e espaços — 
 
 ## Como rodar o projeto
 
-```bash
+```powershell
 # Entre na pasta do projeto
 cd perambulando-react
 
@@ -73,6 +82,24 @@ npm install
 # Inicie o servidor de desenvolvimento
 npm run dev
 ```
+
+Em um novo terminal : 
+
+```powershell
+# Entre na pasta do projeto
+cd backend
+
+# Inicie o servidor de desenvolvimento
+npm run dev
+
+Em um novo terminal : 
+
+```powershell
+# Entre na pasta do projeto
+cd backend
+
+# Inicie o servidor de desenvolvimento
+npx prisma studio (DB local)
 
 Acesse em: [http://localhost:5173](http://localhost:5173)
 
