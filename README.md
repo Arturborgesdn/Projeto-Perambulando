@@ -94,10 +94,10 @@ npm run dev
 Em um novo terminal : 
 
 ```powershell
-# Entre na pasta do projeto
+# Entre na pasta do backend
 cd backend
 
-# Inicie o servidor de desenvolvimento
+# Inicie o servidor
 npm run dev
 
 ```
@@ -105,10 +105,10 @@ npm run dev
 Em um novo terminal : 
 
 ```powershell
-# Entre na pasta do projeto
+# Entre na pasta backend
 cd backend
 
-# Inicie o servidor de desenvolvimento
+# Inicia o banco de dados local
 npx prisma studio
 
 ```
