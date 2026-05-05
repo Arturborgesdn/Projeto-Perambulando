@@ -101,7 +101,7 @@ Em um novo terminal :
 cd backend
 
 # Inicie o servidor de desenvolvimento
-npx prisma studio (DB local)
+npx prisma studio
 
 ```
 
